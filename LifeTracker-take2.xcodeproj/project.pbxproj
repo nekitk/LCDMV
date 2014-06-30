@@ -11,6 +11,11 @@
 		45D67775195EB9E300048A8E /* LifeTracker_take2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 45D67773195EB9E300048A8E /* LifeTracker_take2.xcdatamodeld */; };
 		45D67777195EB9E300048A8E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D67776195EB9E300048A8E /* Images.xcassets */; };
 		45D67783195EB9E300048A8E /* LifeTracker_take2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67782195EB9E300048A8E /* LifeTracker_take2Tests.swift */; };
+		45D6778D195EBA0500048A8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45D6778C195EBA0500048A8E /* Main.storyboard */; };
+		45D6778F195EBA3000048A8E /* TimersListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D6778E195EBA3000048A8E /* TimersListViewController.swift */; };
+		45D67791195EBA4100048A8E /* AddTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67790195EBA4100048A8E /* AddTimerViewController.swift */; };
+		45D67793195EBC3400048A8E /* TimersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67792195EBC3400048A8E /* TimersManager.swift */; };
+		45D67796195EC33E00048A8E /* CurrentTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +37,11 @@
 		45D6777C195EB9E300048A8E /* LifeTracker-take2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LifeTracker-take2Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D67781195EB9E300048A8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45D67782195EB9E300048A8E /* LifeTracker_take2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeTracker_take2Tests.swift; sourceTree = "<group>"; };
+		45D6778C195EBA0500048A8E /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		45D6778E195EBA3000048A8E /* TimersListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimersListViewController.swift; sourceTree = "<group>"; };
+		45D67790195EBA4100048A8E /* AddTimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTimerViewController.swift; sourceTree = "<group>"; };
+		45D67792195EBC3400048A8E /* TimersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimersManager.swift; sourceTree = "<group>"; };
+		45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentTimerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +83,9 @@
 		45D6776E195EB9E300048A8E /* LifeTracker-take2 */ = {
 			isa = PBXGroup;
 			children = (
+				45D6778C195EBA0500048A8E /* Main.storyboard */,
+				45D67792195EBC3400048A8E /* TimersManager.swift */,
+				45D67794195EBC4600048A8E /* Views */,
 				45D67771195EB9E300048A8E /* AppDelegate.swift */,
 				45D67776195EB9E300048A8E /* Images.xcassets */,
 				45D67773195EB9E300048A8E /* LifeTracker_take2.xcdatamodeld */,
@@ -104,6 +117,16 @@
 				45D67781195EB9E300048A8E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		45D67794195EBC4600048A8E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				45D6778E195EBA3000048A8E /* TimersListViewController.swift */,
+				45D67790195EBA4100048A8E /* AddTimerViewController.swift */,
+				45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D67777195EB9E300048A8E /* Images.xcassets in Resources */,
+				45D6778D195EBA0500048A8E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +227,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45D67791195EBA4100048A8E /* AddTimerViewController.swift in Sources */,
+				45D6778F195EBA3000048A8E /* TimersListViewController.swift in Sources */,
+				45D67793195EBC3400048A8E /* TimersManager.swift in Sources */,
 				45D67775195EB9E300048A8E /* LifeTracker_take2.xcdatamodeld in Sources */,
+				45D67796195EC33E00048A8E /* CurrentTimerViewController.swift in Sources */,
 				45D67772195EB9E300048A8E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
