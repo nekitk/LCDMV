@@ -1,9 +1,13 @@
 import UIKit
+import AVFoundation
 
 class CurrentTimerViewController: UIViewController {
 
     @IBOutlet var txtName: UILabel
     @IBOutlet var txtTime: UILabel
+    
+    var soundPlayer: AVAudioPlayer!
+    let finishSound = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("mario", ofType: "wav"))
     
     var interval: Int = 0
     var ticked = 0
@@ -15,20 +19,27 @@ class CurrentTimerViewController: UIViewController {
             scheduledTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateTime", userInfo: nil, repeats: true)
             isRunning = true
             updateTimeLabel()
+            
+            soundPlayer.playAtTime(soundPlayer.deviceCurrentTime + NSTimeInterval(interval))
         }
     }
     
     func updateTime() {
         if ++ticked >= interval {
-            scheduledTimer?.invalidate()
-            txtTime.text = "Finished"
-            timersManager.trackCurrent()
-            isRunning = false
-            ticked = 0
+            timerFinished()
         }
         else {
             updateTimeLabel()
         }
+    }
+    
+    func timerFinished() {
+        scheduledTimer?.invalidate()
+        txtTime.text = "Finished"
+        
+        timersManager.trackCurrent()
+        isRunning = false
+        ticked = 0
     }
     
     func updateTimeLabel() {
@@ -47,6 +58,12 @@ class CurrentTimerViewController: UIViewController {
         ticked = 0
         isRunning = false
         updateTimeLabel()
+    }
+    
+    override func viewDidLoad() {
+        // Initializing audio player
+        soundPlayer = AVAudioPlayer(contentsOfURL: finishSound, error: nil)
+        soundPlayer.prepareToPlay()
     }
     
     override func viewWillAppear(animated: Bool) {

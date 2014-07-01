@@ -16,6 +16,7 @@ class TimersManager: NSObject {
         super.init()
         
         addTimer("Test", minutes: 0, seconds: 4)
+        addTimer("Quarter", minutes: 0, seconds: 15)
     }
     
     func addTimer(name: String, minutes: Int, seconds: Int) {

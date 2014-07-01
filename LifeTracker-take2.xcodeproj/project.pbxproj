@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		45863A251961566B008BF8A5 /* PomodorosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A241961566B008BF8A5 /* PomodorosViewController.swift */; };
 		45863A27196157DA008BF8A5 /* PomodoroManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A26196157DA008BF8A5 /* PomodoroManager.swift */; };
+		45BDA9061962A6D900ED64E3 /* mario.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45BDA9051962A6D900ED64E3 /* mario.wav */; };
 		45D67772195EB9E300048A8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67771195EB9E300048A8E /* AppDelegate.swift */; };
 		45D67775195EB9E300048A8E /* LifeTracker_take2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 45D67773195EB9E300048A8E /* LifeTracker_take2.xcdatamodeld */; };
 		45D67777195EB9E300048A8E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D67776195EB9E300048A8E /* Images.xcassets */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		45863A241961566B008BF8A5 /* PomodorosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PomodorosViewController.swift; sourceTree = "<group>"; };
 		45863A26196157DA008BF8A5 /* PomodoroManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PomodoroManager.swift; sourceTree = "<group>"; };
+		45BDA9051962A6D900ED64E3 /* mario.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mario.wav; sourceTree = "<group>"; };
 		45D6776C195EB9E300048A8E /* LifeTracker-take2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LifeTracker-take2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D67770195EB9E300048A8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45D67771195EB9E300048A8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 		45D6776F195EB9E300048A8E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				45BDA9051962A6D900ED64E3 /* mario.wav */,
 				45D67770195EB9E300048A8E /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -222,6 +225,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45BDA9061962A6D900ED64E3 /* mario.wav in Resources */,
 				45D67777195EB9E300048A8E /* Images.xcassets in Resources */,
 				45D6778D195EBA0500048A8E /* Main.storyboard in Resources */,
 			);
