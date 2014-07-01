@@ -14,15 +14,17 @@ class CurrentTimerViewController: UIViewController {
     var timerTimeInSec: Int = 0
     var launchMoment: NSDate?
     
-    //todo nstimer: schedule at view appear and call updateTime()
+    var refreshTimer: NSTimer!
     
     @IBAction func runButtonClick() {
         if !launchMoment {
             launchMoment = NSDate()
-            updateTime()
+            refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
             scheduleNotification()
         }
     }
+    
+    // iOs 7 only. iOs 8 requires notification registration
     
     func scheduleNotification() {
         let timerEndNotification = UILocalNotification()
@@ -35,8 +37,24 @@ class CurrentTimerViewController: UIViewController {
     }
     
     func updateTime() {
-        let secondsLeft = NSDate().timeIntervalSinceDate(launchMoment!)
-        txtTime.text = String(secondsLeft)
+        let secondsPassed = launchMoment ? NSDate().timeIntervalSinceDate(launchMoment!) : 0
+        let secondsLeft = NSTimeInterval(timerTimeInSec) - secondsPassed
+        
+        if secondsLeft > 0 {
+            txtTime.text = String(Int(secondsLeft))
+        }
+        else {
+            resetTimer()
+            
+            // Finish message and sound
+            txtTime.text = "Finished"
+            soundPlayer.play()
+        }
+    }
+    
+    func resetTimer() {
+        refreshTimer.invalidate()
+        launchMoment = nil
     }
     
     @IBAction func pauseButtonClick() {
@@ -44,7 +62,9 @@ class CurrentTimerViewController: UIViewController {
     }
     
     @IBAction func resetButtonClick() {
-
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        resetTimer()
+        updateTime()
     }
     
     override func viewDidLoad() {
@@ -58,11 +78,8 @@ class CurrentTimerViewController: UIViewController {
         if timer {
             txtName.text = timer.name
             timerTimeInSec = 60 * timer.minutes + timer.seconds
+            updateTime()
         }
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        
     }
 
 }
