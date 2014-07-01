@@ -1,6 +1,6 @@
 import UIKit
 
-let timersManager: TimersManager = TimersManager()
+let timersManager = TimersManager()
 
 struct timer {
     var name: String
@@ -33,5 +33,9 @@ class TimersManager: NSObject {
         else {
             return nil
         }
+    }
+    
+    func trackCurrent() {
+        pomodoroManager.trackTimer(currentTimer!)
     }
 }

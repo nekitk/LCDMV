@@ -22,6 +22,7 @@ class CurrentTimerViewController: UIViewController {
         if ++ticked >= interval {
             scheduledTimer?.invalidate()
             txtTime.text = "Finished"
+            timersManager.trackCurrent()
             isRunning = false
             ticked = 0
         }
