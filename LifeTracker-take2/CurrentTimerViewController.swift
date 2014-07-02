@@ -6,10 +6,12 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var txtName: UILabel
     @IBOutlet var txtTime: UILabel
     
-    var soundPlayer: AVAudioPlayer!
-    
+    var finishSoundPlayer: AVAudioPlayer!
     let finishSoundName = "mario.wav"
     let finishSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("mario", ofType: "wav"))
+    
+    var startSoundPlayer: AVAudioPlayer!
+    let startSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("start", ofType: "wav"))
     
     var timerTimeInSec: Int = 0
     var launchMoment: NSDate?
@@ -18,6 +20,8 @@ class CurrentTimerViewController: UIViewController {
     
     @IBAction func runButtonClick() {
         if !launchMoment {
+            startSoundPlayer.play()
+            
             launchMoment = NSDate()
             refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
             scheduleNotification()
@@ -41,14 +45,25 @@ class CurrentTimerViewController: UIViewController {
         let secondsLeft = NSTimeInterval(timerTimeInSec) - secondsPassed
         
         if secondsLeft > 0 {
-            txtTime.text = String(Int(secondsLeft))
+            let minutesToShow = Int(secondsLeft) / 60
+            let secondsToShow = Int(secondsLeft) % 60
+            var secondsString: String!
+            if secondsToShow < 10 {
+                secondsString = "0\(secondsToShow)"
+            }
+            else {
+                secondsString = String(secondsToShow)
+            }
+            txtTime.text = "\(minutesToShow):\(secondsString)"
         }
         else {
+            pomodoroManager.trackTimer(timersManager.currentTimer!, launchDate: launchMoment!)
+            
             resetTimer()
             
             // Finish message and sound
             txtTime.text = "Finished"
-            soundPlayer.play()
+            finishSoundPlayer.play()
         }
     }
     
@@ -68,16 +83,19 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        // Initializing audio player
-        soundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
-        soundPlayer.prepareToPlay()
+        // Initializing sound players
+        finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
+        finishSoundPlayer.prepareToPlay()
+        
+        startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
+        startSoundPlayer.prepareToPlay()
     }
     
     override func viewWillAppear(animated: Bool) {
-        let timer = timersManager.getCurrent()
-        if timer {
+        if let timer = timersManager.getCurrent() {
             txtName.text = timer.name
             timerTimeInSec = 60 * timer.minutes + timer.seconds
+
             updateTime()
         }
     }

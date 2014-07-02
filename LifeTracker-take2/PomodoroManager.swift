@@ -12,14 +12,11 @@ class PomodoroManager: NSObject {
    
     var pomodoros = pomodoro[]()
     
-    func trackTimer(timerIndex: Int) {
+    func trackTimer(timerIndex: Int, launchDate: NSDate) {
         let timer = timersManager.timers[timerIndex]
         let duration = timer.minutes * 60 + timer.seconds
         
-        //todo current date is end date, not the start date
-        let dateStarted = NSDate()
-        
-        pomodoros += pomodoro(timerIndex: timerIndex, dateStarted: dateStarted, durationInSec: duration)
+        pomodoros += pomodoro(timerIndex: timerIndex, dateStarted: launchDate, durationInSec: duration)
     }
     
 }

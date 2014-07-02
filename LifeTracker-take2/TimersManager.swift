@@ -10,6 +10,7 @@ struct timer {
 
 class TimersManager: NSObject {
     var timers = timer[]()
+    
     var currentTimer: Int?
     
     init() {
@@ -36,7 +37,4 @@ class TimersManager: NSObject {
         }
     }
     
-    func trackCurrent() {
-        pomodoroManager.trackTimer(currentTimer!)
-    }
 }

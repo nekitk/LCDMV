@@ -15,7 +15,11 @@ class PomodorosViewController: UIViewController, UITableViewDataSource, UITableV
         let timer = timersManager.timers[pomodoro.timerIndex]
         
         pomodoroCell.text = "\(timer.name): \(pomodoro.durationInSec) sec"
-        pomodoroCell.detailTextLabel.text = "Started at \(pomodoro.dateStarted)"
+        
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.timeZone = NSTimeZone.systemTimeZone()
+        pomodoroCell.detailTextLabel.text = "Started at \(dateFormatter.stringFromDate(pomodoro.dateStarted))"
         
         return pomodoroCell
     }

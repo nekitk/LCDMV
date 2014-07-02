@@ -19,6 +19,7 @@
 		45D67791195EBA4100048A8E /* AddTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67790195EBA4100048A8E /* AddTimerViewController.swift */; };
 		45D67793195EBC3400048A8E /* TimersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67792195EBC3400048A8E /* TimersManager.swift */; };
 		45D67796195EC33E00048A8E /* CurrentTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */; };
+		45D6BA361963E1BE00C6A8B9 /* start.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45D6BA351963E1BE00C6A8B9 /* start.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		45D67790195EBA4100048A8E /* AddTimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTimerViewController.swift; sourceTree = "<group>"; };
 		45D67792195EBC3400048A8E /* TimersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimersManager.swift; sourceTree = "<group>"; };
 		45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentTimerViewController.swift; sourceTree = "<group>"; };
+		45D6BA351963E1BE00C6A8B9 /* start.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = start.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 		45D6776F195EB9E300048A8E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				45D6BA351963E1BE00C6A8B9 /* start.wav */,
 				45BDA9051962A6D900ED64E3 /* mario.wav */,
 				45D67770195EB9E300048A8E /* Info.plist */,
 			);
@@ -228,6 +231,7 @@
 				45BDA9061962A6D900ED64E3 /* mario.wav in Resources */,
 				45D67777195EB9E300048A8E /* Images.xcassets in Resources */,
 				45D6778D195EBA0500048A8E /* Main.storyboard in Resources */,
+				45D6BA361963E1BE00C6A8B9 /* start.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
