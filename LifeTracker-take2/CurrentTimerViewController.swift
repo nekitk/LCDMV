@@ -27,24 +27,28 @@ class CurrentTimerViewController: UIViewController {
     var refreshTimer: NSTimer!
     
     @IBAction func runButtonClick() {
-        
-        // No launchMoment means timer is stopped
-        if !launchMoment {
-            startSoundPlayer.play()
-            secondsToGo = currentTimer.seconds
-            originalLaunchMoment = NSDate()
-            launchMoment = originalLaunchMoment
-            refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
-            scheduleNotification()
-        }
-        
-        if isPaused {
-            startSoundPlayer.play()
-            isPaused = false
-            launchMoment = NSDate()
-            secondsToGo = secondsToGo - Int(secondsPassed)
-            refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
-            scheduleNotification()
+        if currentTimer {
+            // No launchMoment means timer is stopped
+            if !launchMoment {
+                startSoundPlayer.play()
+                secondsToGo = currentTimer.seconds
+                originalLaunchMoment = NSDate()
+                launchMoment = originalLaunchMoment
+                refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
+                scheduleNotification()
+                
+                // Prevent phone locking
+                UIApplication.sharedApplication().idleTimerDisabled = true
+            }
+            
+            if isPaused {
+                startSoundPlayer.play()
+                isPaused = false
+                launchMoment = NSDate()
+                secondsToGo = secondsToGo - Int(secondsPassed)
+                refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
+                scheduleNotification()
+            }
         }
     }
     
@@ -108,28 +112,35 @@ class CurrentTimerViewController: UIViewController {
         txtName.text = currentTimer.name
         secondsToGo = currentTimer.seconds
         updateTime()
+        
+        // Enable phone locking again
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
     
     @IBAction func pauseButtonClick() {
-        isPaused = true
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
-        refreshTimer.invalidate()
+        if currentTimer {
+            isPaused = true
+            UIApplication.sharedApplication().cancelAllLocalNotifications()
+            refreshTimer.invalidate()
+        }
     }
     
     @IBAction func stopButtonClick() {
-        // Track finished timer
-        let overTimeSeconds: Int = Int(secondsPassed) - secondsToGo
-        
-        // If timer is not yet finished overTimeSeconds will be negative, and they will be discarded from overall timer length
-        pomodoroManager.trackTimer(currentTimerIndex, launchDate: originalLaunchMoment!, overTimeSeconds: overTimeSeconds)
-        
-        isOver = false
-        isPaused = false
-        
-        finishSoundPlayer.play()
-        
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
-        resetTimer()
+        if currentTimer {
+            // Track finished timer
+            let overTimeSeconds: Int = Int(secondsPassed) - secondsToGo
+            
+            // If timer is not yet finished overTimeSeconds will be negative, and they will be discarded from overall timer length
+            pomodoroManager.trackTimer(currentTimerIndex, launchDate: originalLaunchMoment!, overTimeSeconds: overTimeSeconds)
+            
+            isOver = false
+            isPaused = false
+            
+            finishSoundPlayer.play()
+            
+            UIApplication.sharedApplication().cancelAllLocalNotifications()
+            resetTimer()
+        }
     }
     
     override func viewDidLoad() {
@@ -144,10 +155,12 @@ class CurrentTimerViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         if !launchMoment {
             (currentTimer, currentTimerIndex) = timersManager.getCurrent()
-            txtName.text = currentTimer.name
-            secondsToGo = currentTimer.seconds
-
-            updateTime()
+            
+            if currentTimer {
+                txtName.text = currentTimer.name
+                secondsToGo = currentTimer.seconds
+                updateTime()
+            }
         }
     }
 

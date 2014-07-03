@@ -12,16 +12,21 @@ class PomodorosViewController: UIViewController, UITableViewDataSource, UITableV
         let pomodoroCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: nil)
         
         let pomodoro = pomodoroManager.pomodoros[indexPath.row]
-        let timer = timersManager.timers[pomodoro.timerIndex]
         
-        pomodoroCell.text = "\(timer.name): \(pomodoro.durationInSec) sec"
+        if let timer = timersManager.timers[pomodoro.timerIndex] {
         
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-        dateFormatter.timeZone = NSTimeZone.systemTimeZone()
-        pomodoroCell.detailTextLabel.text = "Started at \(dateFormatter.stringFromDate(pomodoro.dateStarted))"
-        
-        return pomodoroCell
+            pomodoroCell.text = "\(timer.name): \(pomodoro.durationInSec) sec"
+            
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+            dateFormatter.timeZone = NSTimeZone.systemTimeZone()
+            pomodoroCell.detailTextLabel.text = "Started at \(dateFormatter.stringFromDate(pomodoro.dateStarted))"
+            
+            return pomodoroCell
+        }
+        else {
+            return nil
+        }
     }
     
     override func viewWillAppear(animated: Bool) {

@@ -9,7 +9,7 @@ struct timer {
 }
 
 class TimersManager: NSObject {
-    var timers = timer[]()
+    var timers = Dictionary<Int, timer>()
     
     var currentTimer: Int?
     
@@ -22,7 +22,11 @@ class TimersManager: NSObject {
     
     func addTimer(name: String, minutes: Int, var seconds: Int, isContinuos: Bool = false) {
         seconds += minutes * 60
-        timers.append(timer(name: name, seconds: seconds, isContinuos: isContinuos))
+        
+        //todo proper ID generator (just ++ it every addTimer call)
+        let newTimerId = timers.count
+        
+        timers[newTimerId] = timer(name: name, seconds: seconds, isContinuos: isContinuos)
     }
     
     func setCurrent(index: Int) {
@@ -36,6 +40,11 @@ class TimersManager: NSObject {
         else {
             return (nil, nil)
         }
+    }
+    
+    func removeTimer(index: Int) {
+        pomodoroManager.removePomodorosOfTimer(index)
+        timers[index] = nil
     }
     
 }

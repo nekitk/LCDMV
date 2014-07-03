@@ -13,7 +13,6 @@ class AddTimerViewController: UIViewController {
         let seconds = txtSeconds.text.toInt()
         
         if !name.isEmpty && (minutes || seconds) {
-            //todo Continuos or not?
             timersManager.addTimer(
                 name,
                 minutes: (minutes ? minutes! : 0),
