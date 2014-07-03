@@ -13,7 +13,9 @@ class CurrentTimerViewController: UIViewController {
     var startSoundPlayer: AVAudioPlayer!
     let startSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("start", ofType: "wav"))
     
-    var timerTimeInSec: Int = 0
+    var currentTimer: timer!
+    var currentTimerIndex: Int!
+    
     var secondsToGo: Int!
     var launchMoment: NSDate?
     var originalLaunchMoment: NSDate?
@@ -29,7 +31,7 @@ class CurrentTimerViewController: UIViewController {
         // No launchMoment means timer is stopped
         if !launchMoment {
             startSoundPlayer.play()
-            secondsToGo = timerTimeInSec
+            secondsToGo = currentTimer.seconds
             originalLaunchMoment = NSDate()
             launchMoment = originalLaunchMoment
             refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
@@ -63,14 +65,20 @@ class CurrentTimerViewController: UIViewController {
         var secondsLeft = secondsToGo - Int(secondsPassed)
         var prefix = ""
         
-        if secondsLeft < 0 {
-            secondsLeft = abs(secondsLeft)
-            prefix = "+"
-            
-            // Play finish sound once
+        if secondsLeft <= 0 {
             if !isOver {
                 isOver = true
                 finishSoundPlayer.play()
+            }
+
+            if currentTimer.isContinuos {
+                secondsLeft = abs(secondsLeft)
+                prefix = "+"
+            }
+            else {
+                // Not continuos
+                stopButtonClick()
+                return
             }
         }
         
@@ -92,12 +100,17 @@ class CurrentTimerViewController: UIViewController {
     }
     
     func resetTimer() {
-        refreshTimer.invalidate()
+        if refreshTimer {
+            refreshTimer.invalidate()
+        }
         launchMoment = nil
+        (currentTimer, currentTimerIndex) = timersManager.getCurrent()
+        txtName.text = currentTimer.name
+        secondsToGo = currentTimer.seconds
+        updateTime()
     }
     
     @IBAction func pauseButtonClick() {
-        //todo Not working
         isPaused = true
         UIApplication.sharedApplication().cancelAllLocalNotifications()
         refreshTimer.invalidate()
@@ -108,14 +121,15 @@ class CurrentTimerViewController: UIViewController {
         let overTimeSeconds: Int = Int(secondsPassed) - secondsToGo
         
         // If timer is not yet finished overTimeSeconds will be negative, and they will be discarded from overall timer length
-        pomodoroManager.trackTimer(timersManager.currentTimer!, launchDate: originalLaunchMoment!, overTimeSeconds: overTimeSeconds)
+        pomodoroManager.trackTimer(currentTimerIndex, launchDate: originalLaunchMoment!, overTimeSeconds: overTimeSeconds)
         
         isOver = false
         isPaused = false
         
+        finishSoundPlayer.play()
+        
         UIApplication.sharedApplication().cancelAllLocalNotifications()
         resetTimer()
-        updateTime()
     }
     
     override func viewDidLoad() {
@@ -128,10 +142,10 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        if let timer = timersManager.getCurrent() {
-            txtName.text = timer.name
-            timerTimeInSec = 60 * timer.minutes + timer.seconds
-            secondsToGo = timerTimeInSec
+        if !launchMoment {
+            (currentTimer, currentTimerIndex) = timersManager.getCurrent()
+            txtName.text = currentTimer.name
+            secondsToGo = currentTimer.seconds
 
             updateTime()
         }

@@ -20,7 +20,11 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: nil)
         let timer = timersManager.timers[indexPath.row]
         cell.text = timer.name
-        cell.detailTextLabel.text = "\(timer.minutes) min \(timer.seconds) sec"
+        cell.detailTextLabel.text = "\(timer.seconds / 60) min \(timer.seconds % 60) sec"
+        
+        if timer.isContinuos {
+            cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
+        }
         return cell
     }
     
