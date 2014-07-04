@@ -13,24 +13,25 @@ class PomodorosViewController: UIViewController, UITableViewDataSource, UITableV
         
         let pomodoro = pomodoroManager.pomodoros[indexPath.row]
         
-        if let timer = timersManager.timers[pomodoro.timerIndex] {
+        pomodoroCell.text = "\(pomodoro.timer.name): \(pomodoro.durationInSec) sec"
         
-            pomodoroCell.text = "\(timer.name): \(pomodoro.durationInSec) sec"
-            
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-            dateFormatter.timeZone = NSTimeZone.systemTimeZone()
-            pomodoroCell.detailTextLabel.text = "Started at \(dateFormatter.stringFromDate(pomodoro.dateStarted))"
-            
-            return pomodoroCell
-        }
-        else {
-            return nil
-        }
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.timeZone = NSTimeZone.systemTimeZone()
+        pomodoroCell.detailTextLabel.text = "Started at \(dateFormatter.stringFromDate(pomodoro.dateStarted))"
+        
+        return pomodoroCell
     }
     
     override func viewWillAppear(animated: Bool) {
         pomodorosTable.reloadData()
+    }
+    
+    func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            pomodoroManager.pomodoros.removeAtIndex(indexPath.row)
+            pomodorosTable.reloadData()
+        }
     }
     
 }

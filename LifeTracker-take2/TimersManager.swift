@@ -2,16 +2,11 @@ import UIKit
 
 let timersManager = TimersManager()
 
-struct timer {
-    var name: String
-    var seconds: Int
-    var isContinuos: Bool
-}
-
 class TimersManager: NSObject {
-    var timers = Dictionary<Int, timer>()
     
-    var currentTimer: Int?
+    var timers = Timer[]()
+    
+    var currentTimerIndex: Int?
     
     init() {
         super.init()
@@ -23,28 +18,43 @@ class TimersManager: NSObject {
     func addTimer(name: String, minutes: Int, var seconds: Int, isContinuos: Bool = false) {
         seconds += minutes * 60
         
-        //todo proper ID generator (just ++ it every addTimer call)
+        //todo get rid of this shit
         let newTimerId = timers.count
         
-        timers[newTimerId] = timer(name: name, seconds: seconds, isContinuos: isContinuos)
+        timers.append(Timer(name: name, seconds: seconds, isContinuos: isContinuos))
     }
     
     func setCurrent(index: Int) {
-        currentTimer = index
+        currentTimerIndex = index
     }
     
-    func getCurrent() -> (timer!, Int!) {
-        if currentTimer {
-            return (timers[currentTimer!], currentTimer!)
+    func getCurrent() -> Timer? {
+        if currentTimerIndex {
+            return timers[currentTimerIndex!]
         }
         else {
-            return (nil, nil)
+            return nil
         }
     }
     
-    func removeTimer(index: Int) {
-        pomodoroManager.removePomodorosOfTimer(index)
-        timers[index] = nil
+    func removeTimer(timerToRemoveIndex: Int) {
+        if timerToRemoveIndex == currentTimerIndex {
+            println("Cannot remove current timer")
+            return
+        }
+        
+        pomodoroManager.removePomodorosOfTimer(timers[timerToRemoveIndex])
+        timers.removeAtIndex(timerToRemoveIndex)
     }
+    
+//    func getTimerIndex(timer timerToFind: Timer) -> Int? {
+//        for (timerIndex, timer) in enumerate(timers) {
+//            if timerToFind == timer {
+//                return timerIndex
+//            }
+//        }
+//        
+//        return nil
+//    }
     
 }

@@ -13,8 +13,7 @@ class CurrentTimerViewController: UIViewController {
     var startSoundPlayer: AVAudioPlayer!
     let startSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("start", ofType: "wav"))
     
-    var currentTimer: timer!
-    var currentTimerIndex: Int!
+    var currentTimer: Timer?
     
     var secondsToGo: Int!
     var launchMoment: NSDate?
@@ -31,7 +30,7 @@ class CurrentTimerViewController: UIViewController {
             // No launchMoment means timer is stopped
             if !launchMoment {
                 startSoundPlayer.play()
-                secondsToGo = currentTimer.seconds
+                secondsToGo = currentTimer!.seconds
                 originalLaunchMoment = NSDate()
                 launchMoment = originalLaunchMoment
                 refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
@@ -75,7 +74,7 @@ class CurrentTimerViewController: UIViewController {
                 finishSoundPlayer.play()
             }
 
-            if currentTimer.isContinuos {
+            if currentTimer!.isContinuos {
                 secondsLeft = abs(secondsLeft)
                 prefix = "+"
             }
@@ -108,9 +107,12 @@ class CurrentTimerViewController: UIViewController {
             refreshTimer.invalidate()
         }
         launchMoment = nil
-        (currentTimer, currentTimerIndex) = timersManager.getCurrent()
-        txtName.text = currentTimer.name
-        secondsToGo = currentTimer.seconds
+        currentTimer = timersManager.getCurrent()
+        
+        if currentTimer {
+            txtName.text = currentTimer!.name
+            secondsToGo = currentTimer!.seconds
+        }
         updateTime()
         
         // Enable phone locking again
@@ -131,7 +133,7 @@ class CurrentTimerViewController: UIViewController {
             let overTimeSeconds: Int = Int(secondsPassed) - secondsToGo
             
             // If timer is not yet finished overTimeSeconds will be negative, and they will be discarded from overall timer length
-            pomodoroManager.trackTimer(currentTimerIndex, launchDate: originalLaunchMoment!, overTimeSeconds: overTimeSeconds)
+            pomodoroManager.trackTimer(currentTimer!, launchDate: originalLaunchMoment!, overTimeSeconds: overTimeSeconds)
             
             isOver = false
             isPaused = false
@@ -154,11 +156,11 @@ class CurrentTimerViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         if !launchMoment {
-            (currentTimer, currentTimerIndex) = timersManager.getCurrent()
+            currentTimer = timersManager.getCurrent()
             
             if currentTimer {
-                txtName.text = currentTimer.name
-                secondsToGo = currentTimer.seconds
+                txtName.text = currentTimer!.name
+                secondsToGo = currentTimer!.seconds
                 updateTime()
             }
         }

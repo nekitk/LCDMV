@@ -19,15 +19,15 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: nil)
         
-        //todo row number doesn't equal to timer index
-        if let timer = timersManager.timers[indexPath.row] {
-            cell.text = timer.name
-            cell.detailTextLabel.text = "\(timer.seconds / 60) min \(timer.seconds % 60) sec"
-            
-            if timer.isContinuos {
-                cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
-            }
+        let timer = timersManager.timers[indexPath.row]
+        
+        cell.text = timer.name
+        cell.detailTextLabel.text = "\(timer.seconds / 60) min \(timer.seconds % 60) sec"
+        
+        if timer.isContinuos {
+            cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
         }
+        
         return cell
     }
     
