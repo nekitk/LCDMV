@@ -74,12 +74,12 @@ class CurrentTimerViewController: UIViewController {
                 finishSoundPlayer.play()
             }
 
-            if currentTimer!.isContinuos {
+            if currentTimer!.isContinuous {
                 secondsLeft = abs(secondsLeft)
                 prefix = "+"
             }
             else {
-                // Not continuos
+                // Not continuous
                 stopButtonClick()
                 return
             }

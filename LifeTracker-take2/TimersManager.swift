@@ -15,13 +15,13 @@ class TimersManager: NSObject {
         addTimer("Quarter", minutes: 0, seconds: 15)
     }
     
-    func addTimer(name: String, minutes: Int, var seconds: Int, isContinuos: Bool = false) {
+    func addTimer(name: String, minutes: Int, var seconds: Int, isContinuous: Bool = false) {
         seconds += minutes * 60
         
         //todo get rid of this shit
         let newTimerId = timers.count
         
-        timers.append(Timer(name: name, seconds: seconds, isContinuos: isContinuos))
+        timers.append(Timer(name: name, seconds: seconds, isContinuous: isContinuous))
     }
     
     func setCurrent(index: Int) {

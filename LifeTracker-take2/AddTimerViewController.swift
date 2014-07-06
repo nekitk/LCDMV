@@ -5,7 +5,7 @@ class AddTimerViewController: UIViewController {
     @IBOutlet var txtName : UITextField
     @IBOutlet var txtMinutes : UITextField
     @IBOutlet var txtSeconds : UITextField
-    @IBOutlet var boxContinuos: UISwitch
+    @IBOutlet var boxContinuous: UISwitch
     
     @IBAction func addButtonClick() {
         let name = txtName.text
@@ -17,14 +17,14 @@ class AddTimerViewController: UIViewController {
                 name,
                 minutes: (minutes ? minutes! : 0),
                 seconds: (seconds ? seconds! : 0),
-                isContinuos: boxContinuos.on
+                isContinuous: boxContinuous.on
             )
             
             // Clear fields
             txtName.text = ""
             txtMinutes.text = ""
             txtSeconds.text = ""
-            boxContinuos.on = false
+            boxContinuous.on = false
             self.view.endEditing(true)
             
             // Move to first tab

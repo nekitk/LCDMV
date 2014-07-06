@@ -3,11 +3,11 @@ import UIKit
 class Timer: NSObject {
     var name: String
     var seconds: Int
-    var isContinuos: Bool
+    var isContinuous: Bool
     
-    init(name: String, seconds: Int, isContinuos: Bool) {
+    init(name: String, seconds: Int, isContinuous: Bool) {
         self.name = name
         self.seconds = seconds
-        self.isContinuos = isContinuos
+        self.isContinuous = isContinuous
     }
 }
