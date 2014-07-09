@@ -12,13 +12,8 @@ class PomodoroManager: NSObject {
    
     var pomodoros = pomodoro[]()
     
-    func trackTimer(timer: Timer, launchDate: NSDate, overTimeSeconds: Int) {
-
-        let duration = timer.seconds + overTimeSeconds
-        
-        if duration > 0 {
-            pomodoros += pomodoro(timer: timer, dateStarted: launchDate, durationInSec: duration)
-        }
+    func trackTimer(timer: Timer, launchDate: NSDate, duration: Int) {
+        pomodoros += pomodoro(timer: timer, dateStarted: launchDate, durationInSec: duration)
     }
     
     func removePomodorosOfTimer(timer: Timer) {

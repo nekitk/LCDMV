@@ -57,15 +57,7 @@ class TimersManager: NSObject {
     
     func setCurrent(index: Int) {
         currentTimerIndex = index
-    }
-    
-    func getCurrent() -> Timer? {
-        if currentTimerIndex {
-            return timers[currentTimerIndex!]
-        }
-        else {
-            return nil
-        }
+        currentTimer = timers[currentTimerIndex!]
     }
     
     func removeTimer(timerToRemoveIndex: Int) {
