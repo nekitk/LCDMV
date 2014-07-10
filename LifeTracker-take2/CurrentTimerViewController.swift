@@ -123,7 +123,6 @@ class CurrentTimerViewController: UIViewController {
                 
                 // Disabling local and sound notifications
                 UIApplication.sharedApplication().cancelAllLocalNotifications()
-                finishSoundPlayer.stop()
             }
             else {
                 doChangeState = false
@@ -169,9 +168,7 @@ class CurrentTimerViewController: UIViewController {
         
         // SecondsLeft became less than 0 when timer is running overtime
         if secondsLeft > 0 {
-            // Schedule sound playing
-            finishSoundPlayer.playAtTime(finishSoundPlayer.deviceCurrentTime + secondsLeft)
-            
+
             // Schedule local notification
             let timerEndNotification = UILocalNotification()
             timerEndNotification.fireDate = NSDate(timeIntervalSinceNow: secondsLeft)
@@ -236,10 +233,10 @@ class CurrentTimerViewController: UIViewController {
     override func viewDidLoad() {
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
-        finishSoundPlayer.prepareToPlay()
+//        finishSoundPlayer.prepareToPlay()
         
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
-        startSoundPlayer.prepareToPlay()
+//        startSoundPlayer.prepareToPlay()
         
         changeStateTo(TIMER_NOT_SET)
     }

@@ -17,11 +17,19 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         dateFormatter.timeZone = NSTimeZone.systemTimeZone()
         
-        stepCell.text = "\(dateFormatter.stringFromDate(step.dateStarted)) \(step.timerName)"
+        let dateEnded = step.dateStarted.dateByAddingTimeInterval(NSTimeInterval(step.durationInSec))
+        
+        stepCell.text = "\(dateFormatter.stringFromDate(step.dateStarted)) - \(dateFormatter.stringFromDate(dateEnded)) \(step.timerName)"
         
         let minutes = step.durationInSec / 60
         let seconds = step.durationInSec % 60
-        stepCell.detailTextLabel.text = "\(minutes)m \(seconds)s"
+        
+        if minutes < 3 && seconds != 0 {
+            stepCell.detailTextLabel.text = "\(minutes)m \(seconds)s"
+        }
+        else {
+            stepCell.detailTextLabel.text = "\(minutes)m"
+        }
         
         return stepCell
     }
