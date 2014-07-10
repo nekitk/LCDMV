@@ -66,7 +66,7 @@ class TimersManager: NSObject {
             return
         }
         
-        pomodoroManager.removePomodorosOfTimer(timers[timerToRemoveIndex])
+        stepsManager.removeStepsOfTimer(timers[timerToRemoveIndex])
         
         removeTimerFromCoreDataByName(timers[timerToRemoveIndex].name)
 

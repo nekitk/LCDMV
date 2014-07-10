@@ -1,36 +1,39 @@
 import UIKit
 
-class PomodorosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class StepsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @IBOutlet var pomodorosTable: UITableView
+    @IBOutlet var stepsTable: UITableView
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return pomodoroManager.pomodoros.count
+        return stepsManager.steps.count
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let pomodoroCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: nil)
+        let stepCell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: nil)
         
-        let pomodoro = pomodoroManager.pomodoros[indexPath.row]
-        
-        pomodoroCell.text = "\(pomodoro.timer.name): \(pomodoro.durationInSec) sec"
+        let step = stepsManager.steps[indexPath.row]
         
         let dateFormatter = NSDateFormatter()
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         dateFormatter.timeZone = NSTimeZone.systemTimeZone()
-        pomodoroCell.detailTextLabel.text = "Started at \(dateFormatter.stringFromDate(pomodoro.dateStarted))"
         
-        return pomodoroCell
+        stepCell.text = "\(dateFormatter.stringFromDate(step.dateStarted)) \(step.timer.name)"
+        
+        let minutes = step.durationInSec / 60
+        let seconds = step.durationInSec % 60
+        stepCell.detailTextLabel.text = "\(minutes)m \(seconds)s"
+        
+        return stepCell
     }
     
     override func viewWillAppear(animated: Bool) {
-        pomodorosTable.reloadData()
+        stepsTable.reloadData()
     }
     
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            pomodoroManager.pomodoros.removeAtIndex(indexPath.row)
-            pomodorosTable.reloadData()
+            stepsManager.steps.removeAtIndex(indexPath.row)
+            stepsTable.reloadData()
         }
     }
     

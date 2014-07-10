@@ -21,31 +21,35 @@ class CurrentTimerViewController: UIViewController {
     
     var refreshTimer: NSTimer!
     
+    var overtimeRunningAllowed: Bool!
+
     var firstLaunchMoment: NSDate!
-    var lastPauseMoment: NSDate?
-    var secondsBeingPaused: Int = 0
+    var lastLaunchMoment: NSDate!
+    var secondsPassed: NSTimeInterval!
+    var totalSecondsToGo: NSTimeInterval!
     
     // Timer states
+    //todo enum?
     let TIMER_NOT_SET = 0
-    let STOPPED = 1
+    let TIMER_SET_BUT_NOT_STARTED = 1
     let RUNNING = 2
     let PAUSED = 3
     let FINISHED = 4
     
-    var currentState: Int?
+    var currentTimerState: Int?
     
     func changeStateTo(newState: Int) {
         // Check from state transitions
-        if currentState {
-            switch currentState! {
+        if currentTimerState {
+            switch currentTimerState! {
             
             case RUNNING:
                 refreshTimer.invalidate()
                 
-            case PAUSED:
-                let thisPauseDuration = Int(NSDate().timeIntervalSinceDate(lastPauseMoment))
-                secondsBeingPaused += thisPauseDuration
-                lastPauseMoment = nil
+                let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
+                secondsPassed = secondsPassed + secondsPassedSinceLastLaunch
+                
+                lastLaunchMoment = nil
                 
             default:
                 break
@@ -56,98 +60,124 @@ class CurrentTimerViewController: UIViewController {
         switch newState {
         
         case TIMER_NOT_SET:
-            txtName.text = "Timer not set"
-            txtTime.enabled = false
-            setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
+            if !currentTimerState {
+                txtName.text = "Timer not set"
+                txtTime.enabled = false
+                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
+            }
         
-        case STOPPED:
-            txtName.text = currentTimer.name
-            txtTime.enabled = true
-            setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: false)
-            updateTimeLabel(currentTimer.seconds)
-            
-        case RUNNING:
-            startSoundPlayer.play()
-            setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: true, stopButtonEnabled: false)
-            
-            // Set initial launch moment
-            if !firstLaunchMoment {
-                firstLaunchMoment = NSDate()
+        case TIMER_SET_BUT_NOT_STARTED:
+            // Timer not set -> Timer set: first timer setup
+            // Timer set -> Timer set: changing current timer
+            // Finished -> Timer set: changing finished timer
+            if currentTimerState == TIMER_NOT_SET || currentTimerState == TIMER_SET_BUT_NOT_STARTED || currentTimerState == FINISHED {
+                txtName.text = currentTimer.name
+                txtTime.enabled = true
+                setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: false)
+                updateTimeLabel(currentTimer.seconds)
             }
             
-            //todo figure out how to make it sound more synchronized
-            let secondsSinceFirstLaunch = Int(NSDate().timeIntervalSinceDate(firstLaunchMoment))
-            let secondsRunning = secondsSinceFirstLaunch - secondsBeingPaused
-            let secondsLeft = currentTimer.seconds - secondsRunning
-            
-            // Schedule notifications
-            scheduleNotifications(secondsToGo: secondsLeft)
-            
-            // Start ticking
-            refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
-            
-            // Prevent phone locking
-            UIApplication.sharedApplication().idleTimerDisabled = true
+        case RUNNING:
+            // Timer set -> Running: first launch
+            // Paused -> Running
+            if currentTimerState == TIMER_SET_BUT_NOT_STARTED || currentTimerState == PAUSED {
+                startSoundPlayer.play()
+                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: true, stopButtonEnabled: false)
+                
+                lastLaunchMoment = NSDate()
+                
+                // Set initial launch moment
+                if !firstLaunchMoment {
+                    firstLaunchMoment = lastLaunchMoment
+                    secondsPassed = 0
+                    totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
+                    overtimeRunningAllowed = currentTimer.isContinuous
+                }
+                
+                // Schedule notifications
+                scheduleNotifications()
+                
+                // Start ticking
+                refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
+                
+                // Prevent phone locking
+                UIApplication.sharedApplication().idleTimerDisabled = true
+            }
             
         case PAUSED:
-            //todo Allow stop when Paused
-            setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: false)
-            
-            // Disabling local and sound notifications
-            UIApplication.sharedApplication().cancelAllLocalNotifications()
-            finishSoundPlayer.stop()
-            
-            lastPauseMoment = NSDate()
+            if currentTimerState == RUNNING {
+                setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: true)
+                
+                // Disabling local and sound notifications
+                UIApplication.sharedApplication().cancelAllLocalNotifications()
+                finishSoundPlayer.stop()
+            }
             
         case FINISHED:
-            txtTime.text = ":)"
-            setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
+            if currentTimerState == RUNNING || currentTimerState == PAUSED {
+                finishSoundPlayer.play()
+                txtTime.text = ":)"
+                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
+                
+                // Enable phone locking again
+                UIApplication.sharedApplication().idleTimerDisabled = false
             
-            // Enable phone locking again
-            UIApplication.sharedApplication().idleTimerDisabled = false
-        
-            // Track time spent
-            pomodoroManager.trackTimer(currentTimer, launchDate: firstLaunchMoment, duration: currentTimer.seconds)
-            
-            // Reset timer
-            secondsBeingPaused = 0
-            firstLaunchMoment = nil
-            lastPauseMoment = nil
+                // For fixed timer: if calculated duration is bigger than it duration
+                if !overtimeRunningAllowed && secondsPassed > totalSecondsToGo {
+                    secondsPassed = totalSecondsToGo
+                }
+                
+                // Track time spent
+                stepsManager.trackTimer(currentTimer, launchDate: firstLaunchMoment, duration: Int(secondsPassed))
+                
+                // Reset timer
+                firstLaunchMoment = nil
+            }
             
         default:
             break
         }
-        currentState = newState
+        
+        // Change timer state to new state
+        currentTimerState = newState
     }
     
-    func scheduleNotifications(var #secondsToGo: Int) {
-        // Schedule sound playing
-        finishSoundPlayer.playAtTime(finishSoundPlayer.deviceCurrentTime + NSTimeInterval(secondsToGo))
+    func scheduleNotifications() {
+        let secondsLeft = NSTimeInterval(currentTimer.seconds) - secondsPassed
         
-        // Schedule local notification
-        let timerEndNotification = UILocalNotification()
-        timerEndNotification.fireDate = NSDate(timeIntervalSinceNow: NSTimeInterval(secondsToGo))
-        timerEndNotification.timeZone = NSTimeZone.defaultTimeZone()
-        timerEndNotification.alertBody = "Timer \(currentTimer.name) ended"
-        timerEndNotification.soundName = finishSoundName
-        
-        UIApplication.sharedApplication().scheduleLocalNotification(timerEndNotification)
+        // SecondsLeft became less than 0 when timer is running overtime
+        if secondsLeft > 0 {
+            // Schedule sound playing
+            finishSoundPlayer.playAtTime(finishSoundPlayer.deviceCurrentTime + secondsLeft)
+            
+            // Schedule local notification
+            let timerEndNotification = UILocalNotification()
+            timerEndNotification.fireDate = NSDate(timeIntervalSinceNow: secondsLeft)
+            timerEndNotification.timeZone = NSTimeZone.defaultTimeZone()
+            timerEndNotification.alertBody = "Timer \(currentTimer.name) ended"
+            timerEndNotification.soundName = finishSoundName
+            
+            UIApplication.sharedApplication().scheduleLocalNotification(timerEndNotification)
+        }
     }
     
     func updateTime() {
-        //todo uncopypaste it
-        let secondsSinceFirstLaunch = Int(NSDate().timeIntervalSinceDate(firstLaunchMoment))
-        let secondsRunning = secondsSinceFirstLaunch - secondsBeingPaused
-        let secondsLeft = currentTimer.seconds - secondsRunning
+        let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
+        let secondsLeft = (totalSecondsToGo - secondsPassed) - secondsPassedSinceLastLaunch
+        updateTimeLabel(Int(ceil(secondsLeft)))
         
-        updateTimeLabel(secondsLeft)
-        
-        if secondsLeft <= 0 {
+        if !overtimeRunningAllowed && secondsLeft <= 0 {
             changeStateTo(FINISHED)
         }
     }
     
-    func updateTimeLabel(timeInSeconds: Int) {
+    func updateTimeLabel(var timeInSeconds: Int) {
+        var prefix = ""
+        if timeInSeconds < 0 {
+            prefix = "+"
+            timeInSeconds = abs(timeInSeconds)
+        }
+        
         let minutesToShow = timeInSeconds / 60
         let secondsToShow = timeInSeconds % 60
     
@@ -160,25 +190,19 @@ class CurrentTimerViewController: UIViewController {
             secondsString = String(secondsToShow)
         }
         
-        txtTime.text = "\(minutesToShow):\(secondsString)"
+        txtTime.text = "\(prefix)\(minutesToShow):\(secondsString)"
     }
 
     @IBAction func runButtonClick() {
-        if currentState == STOPPED || currentState == PAUSED {
-            changeStateTo(RUNNING)
-        }
+        changeStateTo(RUNNING)
     }
     
     @IBAction func pauseButtonClick() {
-        if currentState == RUNNING {
-            changeStateTo(PAUSED)
-        }
+        changeStateTo(PAUSED)
     }
     
     @IBAction func stopButtonClick() {
-        if currentState == PAUSED {
-            changeStateTo(FINISHED)
-        }
+        changeStateTo(FINISHED)
     }
     
     func setButtonsEnabled(#runButtonEnabled: Bool, pauseButtonEnabled: Bool, stopButtonEnabled: Bool) {
@@ -188,25 +212,19 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        changeStateTo(TIMER_NOT_SET)
-        
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
         finishSoundPlayer.prepareToPlay()
         
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
         startSoundPlayer.prepareToPlay()
+        
+        changeStateTo(TIMER_NOT_SET)
     }
     
     override func viewWillAppear(animated: Bool) {
-        // Timer not set -> Stopped: first timer setup
-        // Stopped -> Stopped: changing current timer
-        // Finished -> Stopped: changing finished timer
-        
-        if currentState == TIMER_NOT_SET || currentState == STOPPED || currentState == FINISHED {
-            if currentTimer {
-                changeStateTo(STOPPED)
-            }
+        if currentTimer {
+            changeStateTo(TIMER_SET_BUT_NOT_STARTED)
         }
     }
     
