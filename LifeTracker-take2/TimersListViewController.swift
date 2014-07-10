@@ -5,7 +5,6 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     @IBOutlet var timersTable : UITableView
     
     // Reload data on view appearance
-    
     override func viewWillAppear(animated: Bool) {
         timersTable.reloadData()
     }
@@ -35,7 +34,6 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     // Cell click handling. Shoud be TableView's delegate to work.
-    
     func tableView(tableView: UITableView!, shouldHighlightRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
         
         // Save clicked timer to current
@@ -48,12 +46,16 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     // Timer deletion
-    
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
             timersManager.removeTimer(indexPath.row)
             timersTable.reloadData()
         }
+    }
+    
+    @IBAction func addTimerButtonClick(sender: AnyObject) {
+        //todo Show add timer view somehow
+        self.tabBarController.selectedIndex = 1
     }
     
 }
