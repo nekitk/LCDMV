@@ -23,33 +23,39 @@ class CurrentTimerViewController: UIViewController {
     
     var overtimeRunningAllowed: Bool!
 
+    // Store these in case timer changing
+    var timerName: String!
+    var totalSecondsToGo: NSTimeInterval!
+    
     var firstLaunchMoment: NSDate!
     var lastLaunchMoment: NSDate!
     var secondsPassed: NSTimeInterval!
-    var totalSecondsToGo: NSTimeInterval!
     
     // Timer states
-    //todo enum?
     let TIMER_NOT_SET = 0
     let TIMER_SET_BUT_NOT_STARTED = 1
     let RUNNING = 2
     let PAUSED = 3
     let FINISHED = 4
     
-    var currentTimerState: Int?
+    var timerState: Int?
     
     func changeStateTo(newState: Int) {
+        var doChangeState = true
+        
         // Check from state transitions
-        if currentTimerState {
-            switch currentTimerState! {
+        if timerState {
+            switch timerState! {
             
             case RUNNING:
-                refreshTimer.invalidate()
-                
-                let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
-                secondsPassed = secondsPassed + secondsPassedSinceLastLaunch
-                
-                lastLaunchMoment = nil
+                if newState == PAUSED || newState == FINISHED {
+                    refreshTimer.invalidate()
+                    
+                    let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
+                    secondsPassed = secondsPassed + secondsPassedSinceLastLaunch
+                    
+                    lastLaunchMoment = nil
+                }
                 
             default:
                 break
@@ -60,7 +66,7 @@ class CurrentTimerViewController: UIViewController {
         switch newState {
         
         case TIMER_NOT_SET:
-            if !currentTimerState {
+            if !timerState {
                 txtName.text = "Timer not set"
                 txtTime.enabled = false
                 setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
@@ -70,17 +76,20 @@ class CurrentTimerViewController: UIViewController {
             // Timer not set -> Timer set: first timer setup
             // Timer set -> Timer set: changing current timer
             // Finished -> Timer set: changing finished timer
-            if currentTimerState == TIMER_NOT_SET || currentTimerState == TIMER_SET_BUT_NOT_STARTED || currentTimerState == FINISHED {
+            if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
                 txtName.text = currentTimer.name
                 txtTime.enabled = true
                 setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: false)
                 updateTimeLabel(currentTimer.seconds)
             }
+            else {
+                doChangeState = false
+            }
             
         case RUNNING:
             // Timer set -> Running: first launch
             // Paused -> Running
-            if currentTimerState == TIMER_SET_BUT_NOT_STARTED || currentTimerState == PAUSED {
+            if timerState == TIMER_SET_BUT_NOT_STARTED || timerState == PAUSED {
                 startSoundPlayer.play()
                 setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: true, stopButtonEnabled: false)
                 
@@ -92,6 +101,7 @@ class CurrentTimerViewController: UIViewController {
                     secondsPassed = 0
                     totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
                     overtimeRunningAllowed = currentTimer.isContinuous
+                    timerName = currentTimer.name
                 }
                 
                 // Schedule notifications
@@ -103,18 +113,24 @@ class CurrentTimerViewController: UIViewController {
                 // Prevent phone locking
                 UIApplication.sharedApplication().idleTimerDisabled = true
             }
+            else {
+                doChangeState = false
+            }
             
         case PAUSED:
-            if currentTimerState == RUNNING {
+            if timerState == RUNNING {
                 setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: true)
                 
                 // Disabling local and sound notifications
                 UIApplication.sharedApplication().cancelAllLocalNotifications()
                 finishSoundPlayer.stop()
             }
+            else {
+                doChangeState = false
+            }
             
         case FINISHED:
-            if currentTimerState == RUNNING || currentTimerState == PAUSED {
+            if timerState == RUNNING || timerState == PAUSED {
                 finishSoundPlayer.play()
                 txtTime.text = ":)"
                 setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
@@ -128,22 +144,28 @@ class CurrentTimerViewController: UIViewController {
                 }
                 
                 // Track time spent
-                stepsManager.trackTimer(currentTimer, launchDate: firstLaunchMoment, duration: Int(secondsPassed))
+                stepsManager.trackTimer(timerName, launchDate: firstLaunchMoment, duration: Int(secondsPassed))
                 
                 // Reset timer
                 firstLaunchMoment = nil
             }
+            else {
+                doChangeState = false
+            }
             
         default:
-            break
+            // Don't change state if it is not described
+            doChangeState = false
         }
         
         // Change timer state to new state
-        currentTimerState = newState
+        if doChangeState {
+            timerState = newState
+        }
     }
     
     func scheduleNotifications() {
-        let secondsLeft = NSTimeInterval(currentTimer.seconds) - secondsPassed
+        let secondsLeft = totalSecondsToGo - secondsPassed
         
         // SecondsLeft became less than 0 when timer is running overtime
         if secondsLeft > 0 {
@@ -154,7 +176,7 @@ class CurrentTimerViewController: UIViewController {
             let timerEndNotification = UILocalNotification()
             timerEndNotification.fireDate = NSDate(timeIntervalSinceNow: secondsLeft)
             timerEndNotification.timeZone = NSTimeZone.defaultTimeZone()
-            timerEndNotification.alertBody = "Timer \(currentTimer.name) ended"
+            timerEndNotification.alertBody = "Timer \(timerName) ended"
             timerEndNotification.soundName = finishSoundName
             
             UIApplication.sharedApplication().scheduleLocalNotification(timerEndNotification)

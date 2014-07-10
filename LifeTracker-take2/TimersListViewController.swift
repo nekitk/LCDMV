@@ -17,12 +17,15 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: nil)
+        let cell = UITableViewCell(style: UITableViewCellStyle.Value2, reuseIdentifier: nil)
         
         let timer = timersManager.timers[indexPath.row]
         
         cell.text = timer.name
-        cell.detailTextLabel.text = "\(timer.seconds / 60) min \(timer.seconds % 60) sec"
+        
+        let secondsWithoutMinutes = timer.seconds % 60
+        let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"
+        cell.detailTextLabel.text = "\(timer.seconds / 60) min\(secondsString)"
         
         if timer.isContinuous {
             cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"

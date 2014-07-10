@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		45863A251961566B008BF8A5 /* PomodorosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A241961566B008BF8A5 /* PomodorosViewController.swift */; };
+		45863A251961566B008BF8A5 /* StepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A241961566B008BF8A5 /* StepsViewController.swift */; };
 		45863A27196157DA008BF8A5 /* StepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A26196157DA008BF8A5 /* StepsManager.swift */; };
 		45A548011966920B00EBE4AC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A548001966920B00EBE4AC /* Timer.swift */; };
 		45BDA9061962A6D900ED64E3 /* mario.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45BDA9051962A6D900ED64E3 /* mario.wav */; };
@@ -34,7 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		45863A241961566B008BF8A5 /* PomodorosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PomodorosViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		45863A241961566B008BF8A5 /* StepsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StepsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		45863A26196157DA008BF8A5 /* StepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsManager.swift; sourceTree = "<group>"; };
 		45A548001966920B00EBE4AC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45BDA9051962A6D900ED64E3 /* mario.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mario.wav; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 				45D6778E195EBA3000048A8E /* TimersListViewController.swift */,
 				45D67790195EBA4100048A8E /* AddTimerViewController.swift */,
 				45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */,
-				45863A241961566B008BF8A5 /* PomodorosViewController.swift */,
+				45863A241961566B008BF8A5 /* StepsViewController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -261,7 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D67791195EBA4100048A8E /* AddTimerViewController.swift in Sources */,
-				45863A251961566B008BF8A5 /* PomodorosViewController.swift in Sources */,
+				45863A251961566B008BF8A5 /* StepsViewController.swift in Sources */,
 				45863A27196157DA008BF8A5 /* StepsManager.swift in Sources */,
 				45D6778F195EBA3000048A8E /* TimersListViewController.swift in Sources */,
 				45D67793195EBC3400048A8E /* TimersManager.swift in Sources */,

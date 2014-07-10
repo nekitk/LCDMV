@@ -17,7 +17,7 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         dateFormatter.timeZone = NSTimeZone.systemTimeZone()
         
-        stepCell.text = "\(dateFormatter.stringFromDate(step.dateStarted)) \(step.timer.name)"
+        stepCell.text = "\(dateFormatter.stringFromDate(step.dateStarted)) \(step.timerName)"
         
         let minutes = step.durationInSec / 60
         let seconds = step.durationInSec % 60
@@ -32,7 +32,7 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            stepsManager.steps.removeAtIndex(indexPath.row)
+            stepsManager.removeStep(indexPath.row)
             stepsTable.reloadData()
         }
     }

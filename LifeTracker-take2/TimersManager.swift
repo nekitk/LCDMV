@@ -40,7 +40,6 @@ class TimersManager: NSObject {
     }
     
     func addTimer(name: String, minutes: Int, seconds: Int, isContinuous: Bool = false) {
-        
         var appDel: AppDelegate = (UIApplication.sharedApplication().delegate) as AppDelegate
         var context: NSManagedObjectContext = appDel.managedObjectContext
         var timerToBeSaved = NSEntityDescription.insertNewObjectForEntityForName("Timers", inManagedObjectContext: context) as NSManagedObject
@@ -61,18 +60,9 @@ class TimersManager: NSObject {
     }
     
     func removeTimer(timerToRemoveIndex: Int) {
-        if timerToRemoveIndex == currentTimerIndex {
-            println("Cannot remove current timer")
-            return
-        }
-        
-        stepsManager.removeStepsOfTimer(timers[timerToRemoveIndex])
-        
-        removeTimerFromCoreDataByName(timers[timerToRemoveIndex].name)
+        let removingTimerName = timers[timerToRemoveIndex].name
+        let removingTimerDuration = timers[timerToRemoveIndex].seconds
 
-    }
-    
-    func removeTimerFromCoreDataByName(name: String) {
         //Init context
         let appDel = UIApplication.sharedApplication().delegate as AppDelegate
         let context = appDel.managedObjectContext
@@ -83,20 +73,23 @@ class TimersManager: NSObject {
         
         //Fetching results
         if !results.isEmpty {
-            for fetchedTimer: AnyObject in results {
+            fetchLoop: for fetchedTimer: AnyObject in results {
                 let fetchedName = fetchedTimer.valueForKey("name") as String
+                let fetchedDuration = fetchedTimer.valueForKey("seconds") as Int
                 
                 //Delete timer with such a name
-                if (fetchedName == name)
+                if (fetchedName == removingTimerName) && (fetchedDuration == removingTimerDuration)
                 {
                     context.deleteObject(fetchedTimer as NSManagedObject)
+                    break fetchLoop
                 }
             }
+            
+            context.save(nil)
+            
+            loadTimersFromCoreData()
         }
         
-        context.save(nil)
-        
-        loadTimersFromCoreData()
     }
     
 }

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6172.15" systemVersion="13E28" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Steps" syncable="YES">
+        <attribute name="dateStarted" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="timerName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Timers" syncable="YES">
         <attribute name="isContinuous" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -7,5 +12,6 @@
     </entity>
     <elements>
         <element name="Timers" positionX="-54" positionY="-9" width="128" height="90"/>
+        <element name="Steps" positionX="-54" positionY="18" width="128" height="90"/>
     </elements>
 </model>
