@@ -27,8 +27,7 @@ class AddTimerViewController: UIViewController {
             boxContinuous.on = false
             self.view.endEditing(true)
             
-            // Move to first tab
-            self.tabBarController.selectedIndex = 0
+            //todo move back
         }
     }
     

@@ -40,7 +40,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         timersManager.setCurrent(indexPath.row)
         
         // Move to current timer tab
-        self.tabBarController.selectedIndex = 2
+        self.tabBarController.selectedIndex = 1
         
         return false
     }
@@ -51,11 +51,6 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             timersManager.removeTimer(indexPath.row)
             timersTable.reloadData()
         }
-    }
-    
-    @IBAction func addTimerButtonClick(sender: AnyObject) {
-        //todo Show add timer view somehow
-        self.tabBarController.selectedIndex = 1
     }
     
 }
