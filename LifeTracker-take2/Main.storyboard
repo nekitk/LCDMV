@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="YTH-e8-uWZ">
     <dependencies>
+        <deployment defaultVersion="1808" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.13"/>
     </dependencies>
     <scenes>
@@ -173,8 +174,16 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Add new timer" id="nbE-wH-1ra">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="YSf-fN-coN"/>
-                        <barButtonItem key="rightBarButtonItem" title="Done" id="2FE-Q9-ihb"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="YSf-fN-coN">
+                            <connections>
+                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="UYZ-Ip-3Nu"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="2FE-Q9-ihb">
+                            <connections>
+                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="sLa-lT-qEX"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="boxContinuous" destination="i3Z-39-y8e" id="stE-bC-IJN"/>
@@ -184,13 +193,14 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WtD-b1-qkS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="oNt-vv-Hqj" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1092" y="867"/>
         </scene>
         <!--Timers List View Controller - Timers-->
         <scene sceneID="oyu-Dp-OwJ">
             <objects>
-                <viewController id="rUO-7n-QAB" customClass="TimersListViewController" customModule="LifeTracker_take2" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="rUO-7n-QAB" customClass="TimersListViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MrA-T2-SGT">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -208,7 +218,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Timers" id="2Ly-kz-ehc">
-                        <barButtonItem key="rightBarButtonItem" title="+" id="nnd-Mr-8IR">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="nnd-Mr-8IR">
                             <connections>
                                 <segue destination="YL7-om-luX" kind="modal" id="0bW-WK-tre"/>
                             </connections>

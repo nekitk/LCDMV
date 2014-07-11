@@ -1,6 +1,6 @@
 import UIKit
 
-class TimersListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+@objc(TimersListViewController) class TimersListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var timersTable : UITableView
     
@@ -51,6 +51,11 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             timersManager.removeTimer(indexPath.row)
             timersTable.reloadData()
         }
+    }
+    
+    // Back transition from adding timer screen
+    @IBAction func unwindToTimers(segue: UIStoryboardSegue) {
+        
     }
     
 }

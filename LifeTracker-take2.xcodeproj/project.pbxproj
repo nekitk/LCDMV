@@ -36,6 +36,7 @@
 /* Begin PBXFileReference section */
 		45863A241961566B008BF8A5 /* StepsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StepsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		45863A26196157DA008BF8A5 /* StepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsManager.swift; sourceTree = "<group>"; };
+		45A37FA4196FF52700346935 /* TimersListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimersListViewController.h; sourceTree = "<group>"; };
 		45A548001966920B00EBE4AC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45BDA9051962A6D900ED64E3 /* mario.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mario.wav; sourceTree = "<group>"; };
 		45D6776C195EB9E300048A8E /* LifeTracker-take2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LifeTracker-take2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				45D6778E195EBA3000048A8E /* TimersListViewController.swift */,
+				45A37FA4196FF52700346935 /* TimersListViewController.h */,
 				45D67790195EBA4100048A8E /* AddTimerViewController.swift */,
 				45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */,
 				45863A241961566B008BF8A5 /* StepsViewController.swift */,
