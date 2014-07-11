@@ -27,7 +27,7 @@ class AddTimerViewController: UIViewController {
             boxContinuous.on = false
             self.view.endEditing(true)
             
-            //todo move back
+            //todo move back only if timer is added
         }
     }
     

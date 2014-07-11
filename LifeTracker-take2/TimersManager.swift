@@ -5,7 +5,7 @@ let timersManager = TimersManager()
 
 class TimersManager: NSObject {
     
-    var timers = Timer[]()
+    var timers = [Timer]()
     
     var currentTimerIndex: Int?
     
@@ -13,6 +13,14 @@ class TimersManager: NSObject {
         super.init()
         
         loadTimersFromCoreData()
+    }
+    
+    func getTimerByIndex(index: Int) -> Timer {
+        return timers[index]
+    }
+    
+    func getTimersCount() -> Int {
+        return timers.count
     }
     
     func loadTimersFromCoreData() {

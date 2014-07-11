@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="YTH-e8-uWZ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.7" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="YTH-e8-uWZ">
     <dependencies>
         <deployment defaultVersion="1808" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.13"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
     </dependencies>
     <scenes>
-        <!--Steps View Controller - Steps-->
+        <!--Steps-->
         <scene sceneID="LcU-2i-RdQ">
             <objects>
                 <viewController id="7gM-DB-nIJ" customClass="StepsViewController" customModule="LifeTracker_take2" customModuleProvider="target" sceneMemberID="viewController">
@@ -34,7 +34,7 @@
             </objects>
             <point key="canvasLocation" x="-305" y="2175"/>
         </scene>
-        <!--Current Timer View Controller - Current timer-->
+        <!--Current timer-->
         <scene sceneID="h3n-dZ-V2B">
             <objects>
                 <viewController id="jqu-ez-ehU" customClass="CurrentTimerViewController" customModule="LifeTracker_take2" customModuleProvider="target" sceneMemberID="viewController">
@@ -106,9 +106,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NDd-gG-4xb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-296" y="1543"/>
+            <point key="canvasLocation" x="76" y="1425"/>
         </scene>
-        <!--Add Timer View Controller - Add new timer-->
+        <!--Add new timer-->
         <scene sceneID="Xex-Bp-qcI">
             <objects>
                 <viewController id="vNY-uK-amK" customClass="AddTimerViewController" customModule="LifeTracker_take2" customModuleProvider="target" sceneMemberID="viewController">
@@ -168,6 +168,7 @@
                                 </state>
                                 <connections>
                                     <action selector="addButtonClick" destination="vNY-uK-amK" eventType="touchUpInside" id="fdS-8G-daH"/>
+                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="LKV-8L-fpM"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -177,11 +178,6 @@
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="YSf-fN-coN">
                             <connections>
                                 <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="UYZ-Ip-3Nu"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Done" id="2FE-Q9-ihb">
-                            <connections>
-                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="sLa-lT-qEX"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -197,7 +193,7 @@
             </objects>
             <point key="canvasLocation" x="1092" y="867"/>
         </scene>
-        <!--Timers List View Controller - Timers-->
+        <!--Timers-->
         <scene sceneID="oyu-Dp-OwJ">
             <objects>
                 <viewController id="rUO-7n-QAB" customClass="TimersListViewController" sceneMemberID="viewController">
@@ -252,7 +248,7 @@
             </objects>
             <point key="canvasLocation" x="-868" y="1425"/>
         </scene>
-        <!--Navigation Controller - Timers-->
+        <!--Timers-->
         <scene sceneID="M3J-Vr-zqu">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="KCL-LJ-hZ3" sceneMemberID="viewController">
@@ -274,7 +270,7 @@
             </objects>
             <point key="canvasLocation" x="-414" y="867"/>
         </scene>
-        <!--Navigation Controller - Add timer-->
+        <!--Add timer-->
         <scene sceneID="n3L-Wo-711">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YL7-om-luX" sceneMemberID="viewController">
@@ -297,6 +293,9 @@
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination"/>
+        <simulatedScreenMetrics key="destination">
+            <size key="portraitSize" width="320" height="480"/>
+            <size key="landscapeSize" width="480" height="320"/>
+        </simulatedScreenMetrics>
     </simulatedMetricsContainer>
 </document>

@@ -254,6 +254,7 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
         finishSoundPlayer.prepareToPlay()

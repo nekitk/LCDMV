@@ -12,15 +12,15 @@ import UIKit
     // UITableViewDataSource implementation
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return timersManager.timers.count
+        return timersManager.getTimersCount()
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         let cell = UITableViewCell(style: UITableViewCellStyle.Value2, reuseIdentifier: nil)
         
-        let timer = timersManager.timers[indexPath.row]
+        let timer = timersManager.getTimerByIndex(indexPath.row)
         
-        cell.text = timer.name
+        cell.textLabel.text = timer.name
         
         let secondsWithoutMinutes = timer.seconds % 60
         let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"

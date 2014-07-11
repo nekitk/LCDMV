@@ -5,13 +5,13 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
     @IBOutlet var stepsTable: UITableView
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return stepsManager.steps.count
+        return stepsManager.getStepsCount()
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         let stepCell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: nil)
         
-        let step = stepsManager.steps[indexPath.row]
+        let step = stepsManager.getStepByIndex(indexPath.row)
         
         let dateFormatter = NSDateFormatter()
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
@@ -19,7 +19,7 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         let dateEnded = step.dateStarted.dateByAddingTimeInterval(NSTimeInterval(step.durationInSec))
         
-        stepCell.text = "\(dateFormatter.stringFromDate(step.dateStarted)) - \(dateFormatter.stringFromDate(dateEnded)) \(step.timerName)"
+        stepCell.textLabel.text = "\(dateFormatter.stringFromDate(step.dateStarted)) - \(dateFormatter.stringFromDate(dateEnded)) \(step.timerName)"
         
         let minutes = step.durationInSec / 60
         let seconds = step.durationInSec % 60
@@ -38,8 +38,9 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
         stepsTable.reloadData()
         
         // Select and scroll to latest step
-        if !stepsManager.steps.isEmpty {
-            let lastStepIndexPath = NSIndexPath(forRow: stepsManager.steps.count - 1, inSection: 0)
+        let stepsCount = stepsManager.getStepsCount()
+        if stepsCount > 0 {
+            let lastStepIndexPath = NSIndexPath(forRow: stepsCount - 1, inSection: 0)
             stepsTable.selectRowAtIndexPath(lastStepIndexPath, animated: true, scrollPosition: UITableViewScrollPosition.Bottom)
         }
     }

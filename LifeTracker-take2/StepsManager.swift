@@ -11,12 +11,20 @@ struct step {
 
 class StepManager: NSObject {
    
-    var steps = step[]()
+    var steps = [step]()
     
     init() {
         super.init()
         
         loadStepsFromCoreData()
+    }
+    
+    func getStepByIndex(index: Int) -> step {
+        return steps[index]
+    }
+    
+    func getStepsCount() -> Int {
+        return steps.count
     }
     
     func trackTimer(name: String, launchDate: NSDate, duration: Int) {
