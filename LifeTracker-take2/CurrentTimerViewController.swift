@@ -21,7 +21,10 @@ class CurrentTimerViewController: UIViewController {
     
     var refreshTimer: NSTimer!
     
-    var overtimeRunningAllowed: Bool!
+    // Better not to use optionals with Bools
+    // if optionalBool checks optional, not the value of Bool itself
+    var overtimeRunningAllowed: Bool = false
+    var isRunningOvertime: Bool = false
 
     // Store these in case timer changing
     var timerName: String!
@@ -55,6 +58,9 @@ class CurrentTimerViewController: UIViewController {
                     secondsPassed = secondsPassed + secondsPassedSinceLastLaunch
                     
                     lastLaunchMoment = nil
+                    
+                    // Disabling local notifications
+                    UIApplication.sharedApplication().cancelAllLocalNotifications()
                 }
                 
             default:
@@ -91,7 +97,7 @@ class CurrentTimerViewController: UIViewController {
             // Paused -> Running
             if timerState == TIMER_SET_BUT_NOT_STARTED || timerState == PAUSED {
                 startSoundPlayer.play()
-                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: true, stopButtonEnabled: false)
+                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: true, stopButtonEnabled: true)
                 
                 lastLaunchMoment = NSDate()
                 
@@ -102,6 +108,7 @@ class CurrentTimerViewController: UIViewController {
                     totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
                     overtimeRunningAllowed = currentTimer.isContinuous
                     timerName = currentTimer.name
+                    isRunningOvertime = false
                 }
                 
                 // Schedule notifications
@@ -120,9 +127,6 @@ class CurrentTimerViewController: UIViewController {
         case PAUSED:
             if timerState == RUNNING {
                 setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: true)
-                
-                // Disabling local and sound notifications
-                UIApplication.sharedApplication().cancelAllLocalNotifications()
             }
             else {
                 doChangeState = false
@@ -130,16 +134,25 @@ class CurrentTimerViewController: UIViewController {
             
         case FINISHED:
             if timerState == RUNNING || timerState == PAUSED {
-                finishSoundPlayer.play()
+                
                 txtTime.text = ":)"
                 setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
                 
                 // Enable phone locking again
                 UIApplication.sharedApplication().idleTimerDisabled = false
             
+                // Flooring seconds to compare with total time to go and to track it
+                secondsPassed = floor(secondsPassed)
+                
                 // For fixed timer: if calculated duration is bigger than it duration
+                // This means that timer transits to FINISHED after actual finishing moment
+                // It can occur if phone is locked when timer has finished
                 if !overtimeRunningAllowed && secondsPassed > totalSecondsToGo {
                     secondsPassed = totalSecondsToGo
+                }
+                else {
+                    // Play sound only if timer transits to FINISHED state now (not after device unlocking)
+                    finishSoundPlayer.play()
                 }
                 
                 // Track time spent
@@ -185,8 +198,18 @@ class CurrentTimerViewController: UIViewController {
         let secondsLeft = (totalSecondsToGo - secondsPassed) - secondsPassedSinceLastLaunch
         updateTimeLabel(Int(ceil(secondsLeft)))
         
-        if !overtimeRunningAllowed && secondsLeft <= 0 {
-            changeStateTo(FINISHED)
+        // overtime not allowed -> Finished
+        // overtime allowed -> play sound once and continue ticking
+        if secondsLeft <= 0 {
+            if overtimeRunningAllowed {
+                if !isRunningOvertime {
+                    isRunningOvertime = true
+                    finishSoundPlayer.play()
+                }
+            }
+            else {
+                changeStateTo(FINISHED)
+            }
         }
     }
     
@@ -233,10 +256,10 @@ class CurrentTimerViewController: UIViewController {
     override func viewDidLoad() {
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
-//        finishSoundPlayer.prepareToPlay()
+        finishSoundPlayer.prepareToPlay()
         
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
-//        startSoundPlayer.prepareToPlay()
+        startSoundPlayer.prepareToPlay()
         
         changeStateTo(TIMER_NOT_SET)
     }

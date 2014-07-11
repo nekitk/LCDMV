@@ -36,6 +36,12 @@ class StepsViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     override func viewWillAppear(animated: Bool) {
         stepsTable.reloadData()
+        
+        // Select and scroll to latest step
+        if !stepsManager.steps.isEmpty {
+            let lastStepIndexPath = NSIndexPath(forRow: stepsManager.steps.count - 1, inSection: 0)
+            stepsTable.selectRowAtIndexPath(lastStepIndexPath, animated: true, scrollPosition: UITableViewScrollPosition.Bottom)
+        }
     }
     
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
