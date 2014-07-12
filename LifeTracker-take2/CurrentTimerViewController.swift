@@ -159,6 +159,7 @@ class CurrentTimerViewController: UIViewController {
                     secondsPassed = totalSecondsToGo
                 }
                 else {
+                    // Play sound once for NOT ENDLESS timer
                     // Play sound only if timer transits to FINISHED state now (not after device unlocking)
                     finishSoundPlayer.play()
                 }
@@ -215,6 +216,7 @@ class CurrentTimerViewController: UIViewController {
                 if !isRunningOvertime {
                     isRunningOvertime = true
                     
+                    // Play sound once for ENDLESS timer
                     // Play finish sound only if time ran out now (not when phone was locked)
                     if ceil(secondsLeft) >= 0 {
                         finishSoundPlayer.play()
