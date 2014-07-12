@@ -23,6 +23,21 @@ class TimersManager: NSObject {
         return timers.count
     }
     
+    func hasNext() -> Bool {
+        if currentTimerIndex && currentTimerIndex! < (getTimersCount() - 1) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func moveToNextTimer() {
+        if hasNext() {
+            setCurrent(currentTimerIndex! + 1)
+        }
+    }
+    
     func loadTimersFromCoreData() {
         //Clean up timers list
         timers = []

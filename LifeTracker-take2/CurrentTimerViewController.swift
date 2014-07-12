@@ -11,6 +11,8 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var runButton: UIButton
     @IBOutlet var pauseButton: UIButton
     @IBOutlet var stopButton: UIButton
+    @IBOutlet var takeABreakButton: UIButton
+    @IBOutlet var nextButton: UIButton
     
     var finishSoundPlayer: AVAudioPlayer!
     let finishSoundName = "mario.wav"
@@ -75,7 +77,7 @@ class CurrentTimerViewController: UIViewController {
             if !timerState {
                 txtName.text = "Timer not set"
                 txtTime.enabled = false
-                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
+                setButtonsEnabled()
             }
         
         case TIMER_SET_BUT_NOT_STARTED:
@@ -85,7 +87,7 @@ class CurrentTimerViewController: UIViewController {
             if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
                 txtName.text = currentTimer.name
                 txtTime.enabled = true
-                setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: false)
+                setButtonsEnabled(runButtonEnabled: true)
                 updateTimeLabel(currentTimer.seconds)
             }
             else {
@@ -97,7 +99,7 @@ class CurrentTimerViewController: UIViewController {
             // Paused -> Running
             if timerState == TIMER_SET_BUT_NOT_STARTED || timerState == PAUSED {
                 startSoundPlayer.play()
-                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: true, stopButtonEnabled: true)
+                setButtonsEnabled(pauseButtonEnabled: true, stopButtonEnabled: true)
                 
                 lastLaunchMoment = NSDate()
                 
@@ -126,7 +128,7 @@ class CurrentTimerViewController: UIViewController {
             
         case PAUSED:
             if timerState == RUNNING {
-                setButtonsEnabled(runButtonEnabled: true, pauseButtonEnabled: false, stopButtonEnabled: true)
+                setButtonsEnabled(runButtonEnabled: true, stopButtonEnabled: true)
             }
             else {
                 doChangeState = false
@@ -136,7 +138,13 @@ class CurrentTimerViewController: UIViewController {
             if timerState == RUNNING || timerState == PAUSED {
                 
                 txtTime.text = ":)"
-                setButtonsEnabled(runButtonEnabled: false, pauseButtonEnabled: false, stopButtonEnabled: false)
+                
+                if timersManager.currentTimerIndex && timersManager.hasNext() {
+                    setButtonsEnabled(takeABreakButtonEnabled: true, nextButtonEnabled: true)
+                }
+                else {
+                    setButtonsEnabled(takeABreakButtonEnabled: true)
+                }
                 
                 // Enable phone locking again
                 UIApplication.sharedApplication().idleTimerDisabled = false
@@ -202,9 +210,15 @@ class CurrentTimerViewController: UIViewController {
         // overtime allowed -> play sound once and continue ticking
         if secondsLeft <= 0 {
             if overtimeRunningAllowed {
+                
+                // This bool is needed to play sound only once
                 if !isRunningOvertime {
                     isRunningOvertime = true
-                    finishSoundPlayer.play()
+                    
+                    // Play finish sound only if time ran out now (not when phone was locked)
+                    if ceil(secondsLeft) >= 0 {
+                        finishSoundPlayer.play()
+                    }
                 }
             }
             else {
@@ -247,10 +261,26 @@ class CurrentTimerViewController: UIViewController {
         changeStateTo(FINISHED)
     }
     
-    func setButtonsEnabled(#runButtonEnabled: Bool, pauseButtonEnabled: Bool, stopButtonEnabled: Bool) {
+    @IBAction func takeABreakButtonClick() {
+        currentTimer = Timer(name: "Перерыв", seconds: 180, isContinuous: false)
+        
+        // This indicates that current timer is not from timers list
+        timersManager.currentTimerIndex = nil
+        
+        changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+    }
+    
+    @IBAction func nextButtonClick(sender: AnyObject) {
+        timersManager.moveToNextTimer()
+        changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+    }
+    
+    func setButtonsEnabled(runButtonEnabled: Bool = false, pauseButtonEnabled: Bool = false, stopButtonEnabled: Bool = false, takeABreakButtonEnabled: Bool = false, nextButtonEnabled: Bool = false) {
         runButton.enabled = runButtonEnabled
         pauseButton.enabled = pauseButtonEnabled
         stopButton.enabled = stopButtonEnabled
+        takeABreakButton.enabled = takeABreakButtonEnabled
+        nextButton.enabled = nextButtonEnabled
     }
     
     override func viewDidLoad() {
