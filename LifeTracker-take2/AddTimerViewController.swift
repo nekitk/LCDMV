@@ -12,7 +12,7 @@ class AddTimerViewController: UIViewController {
         let minutes = txtMinutes.text.toInt()
         let seconds = txtSeconds.text.toInt()
         
-        if !name.isEmpty && (minutes || seconds) {
+        if !name.isEmpty {
             timersManager.addTimer(
                 name,
                 minutes: (minutes ? minutes! : 0),

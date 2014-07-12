@@ -16,7 +16,7 @@ import UIKit
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Value2, reuseIdentifier: nil)
+        let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: nil)
         
         let timer = timersManager.getTimerByIndex(indexPath.row)
         
@@ -56,6 +56,13 @@ import UIKit
     // Back transition from adding timer screen
     @IBAction func unwindToTimers(segue: UIStoryboardSegue) {
         
+    }
+    
+    // Удалить все таймеры
+    //todo: окно подтверждения
+    @IBAction func deleteAllTimers(sender: AnyObject) {
+        timersManager.deleteAll()
+        timersTable.reloadData()
     }
     
 }

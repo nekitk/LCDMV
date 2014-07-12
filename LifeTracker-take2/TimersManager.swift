@@ -115,4 +115,25 @@ class TimersManager: NSObject {
         
     }
     
+    func deleteAll() {
+        //Init context
+        let appDel = UIApplication.sharedApplication().delegate as AppDelegate
+        let context = appDel.managedObjectContext
+        
+        //Loading data from Core Data
+        let request = NSFetchRequest(entityName: "Timers")
+        let results: Array = context.executeFetchRequest(request, error: nil)
+        
+        //Fetching results
+        if !results.isEmpty {
+            for fetchedTimer in results {
+                context.deleteObject(fetchedTimer as NSManagedObject)
+            }
+            
+            context.save(nil)
+            
+            loadTimersFromCoreData()
+        }
+    }
+    
 }
