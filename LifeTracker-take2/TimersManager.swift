@@ -42,22 +42,17 @@ class TimersManager: NSObject {
         //Clean up timers list
         timers = []
         
-        //Init context
-        let appDel = UIApplication.sharedApplication().delegate as AppDelegate
-        let context = appDel.managedObjectContext
-        
-        //Loading data from Core Data
-        let request = NSFetchRequest(entityName: "Timers")
-        let results: Array = context.executeFetchRequest(request, error: nil)
+        let fetchedTimers = retrieveAllTimersFromCoreData().results
         
         //Fetching results
-        if !results.isEmpty {
-            for fetchedTimer: AnyObject in results {
+        if !fetchedTimers.isEmpty {
+            for fetchedTimer in fetchedTimers {
                 let fetchedName = fetchedTimer.valueForKey("name") as String
                 let fetchedSeconds = fetchedTimer.valueForKey("seconds") as Int
                 let fetchedIsContinuous = fetchedTimer.valueForKey("isContinuous") as Bool
+                let fetchedCompleted = fetchedTimer.valueForKey("completed") as Bool
                 
-                timers.append(Timer(name: fetchedName, seconds: fetchedSeconds, isContinuous: fetchedIsContinuous))
+                timers.append(Timer(name: fetchedName, seconds: fetchedSeconds, isContinuous: fetchedIsContinuous, completed: fetchedCompleted))
             }
         }
     }
@@ -70,6 +65,7 @@ class TimersManager: NSObject {
         timerToBeSaved.setValue(name, forKey: "name")
         timerToBeSaved.setValue(minutes * 60 + seconds, forKey: "seconds")
         timerToBeSaved.setValue(isContinuous, forKey: "isContinuous")
+        timerToBeSaved.setValue(false, forKey: "completed")
         
         context.save(nil)
         
@@ -86,24 +82,18 @@ class TimersManager: NSObject {
         let removingTimerName = timers[timerToRemoveIndex].name
         let removingTimerDuration = timers[timerToRemoveIndex].seconds
 
-        //Init context
-        let appDel = UIApplication.sharedApplication().delegate as AppDelegate
-        let context = appDel.managedObjectContext
-        
-        //Loading data from Core Data
-        let request = NSFetchRequest(entityName: "Timers")
-        let results: Array = context.executeFetchRequest(request, error: nil)
+        let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
         
         //Fetching results
-        if !results.isEmpty {
-            fetchLoop: for fetchedTimer: AnyObject in results {
+        if !fetchedTimers.isEmpty {
+            fetchLoop: for fetchedTimer in fetchedTimers {
                 let fetchedName = fetchedTimer.valueForKey("name") as String
                 let fetchedDuration = fetchedTimer.valueForKey("seconds") as Int
                 
                 //Delete timer with such a name
                 if (fetchedName == removingTimerName) && (fetchedDuration == removingTimerDuration)
                 {
-                    context.deleteObject(fetchedTimer as NSManagedObject)
+                    context.deleteObject(fetchedTimer)
                     break fetchLoop
                 }
             }
@@ -115,19 +105,52 @@ class TimersManager: NSObject {
         
     }
     
-    func deleteAll() {
+    func retrieveAllTimersFromCoreData() -> (context: NSManagedObjectContext, results: [NSManagedObject]) {
         //Init context
         let appDel = UIApplication.sharedApplication().delegate as AppDelegate
         let context = appDel.managedObjectContext
         
         //Loading data from Core Data
         let request = NSFetchRequest(entityName: "Timers")
-        let results: Array = context.executeFetchRequest(request, error: nil)
+        let results = context.executeFetchRequest(request, error: nil) as [NSManagedObject]
+        
+        return (context, results)
+    }
+    
+    func markTimerAsCompleted(timer: Timer) {
+        timer.completed = true
+        
+        let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
+        
+        if !fetchedTimers.isEmpty {
+            fetchLoop: for fetchedTimer in fetchedTimers {
+                let fetchedName = fetchedTimer.valueForKey("name") as String
+                let fetchedDuration = fetchedTimer.valueForKey("seconds") as Int
+                
+                //Delete timer with such a name
+                if (fetchedName == timer.name) && (fetchedDuration == timer.seconds)
+                {
+                    fetchedTimer.setValue(true, forKey: "completed")
+                    break fetchLoop
+                }
+            }
+            
+            context.save(nil)
+            
+            loadTimersFromCoreData()
+        }
+    }
+    
+    func deleteAllCompleted() {
+        let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
         
         //Fetching results
-        if !results.isEmpty {
-            for fetchedTimer in results {
-                context.deleteObject(fetchedTimer as NSManagedObject)
+        if !fetchedTimers.isEmpty {
+            for fetchedTimer in fetchedTimers {
+                let fetchedTimerCompleted = fetchedTimer.valueForKey("completed") as Bool
+                if fetchedTimerCompleted {
+                    context.deleteObject(fetchedTimer)
+                }
             }
             
             context.save(nil)

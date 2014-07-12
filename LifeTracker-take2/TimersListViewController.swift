@@ -30,6 +30,14 @@ import UIKit
             cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
         }
         
+        cell.detailTextLabel.textColor = UIColor(white: 0.3, alpha: 1)
+        
+        if timer.completed {
+            cell.textLabel.textColor = UIColor.whiteColor()
+            cell.detailTextLabel.textColor = UIColor(white: 0.7, alpha: 1)
+            cell.backgroundColor = UIColor(red: 0, green: 0.5, blue: 0.5, alpha: 1)
+        }
+        
         return cell
     }
     
@@ -60,8 +68,8 @@ import UIKit
     
     // Удалить все таймеры
     //todo: окно подтверждения
-    @IBAction func deleteAllTimers(sender: AnyObject) {
-        timersManager.deleteAll()
+    @IBAction func deleteAllCompletedTimers(sender: AnyObject) {
+        timersManager.deleteAllCompleted()
         timersTable.reloadData()
     }
     

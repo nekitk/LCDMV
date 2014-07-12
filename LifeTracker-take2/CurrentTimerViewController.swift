@@ -102,19 +102,25 @@ class CurrentTimerViewController: UIViewController {
                 
                 lastLaunchMoment = NSDate()
                 
-//                При первом запуске копируем все данные таймера.
-//                В таком случае нам не страшно удаление или изменение таймера
-//                Это никак не повлияет на тиканье.
+
                 if !firstLaunchMoment {
                     firstLaunchMoment = lastLaunchMoment
+                    
                     secondsPassed = 0
+                    isRunningOvertime = false
+                    
+                    // При первом запуске копируем все данные таймера.
+                    // В таком случае нам не страшно удаление или изменение
+                    // Это никак не повлияет на тиканье.
                     totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
                     overtimeRunningAllowed = currentTimer.isContinuous
                     timerName = currentTimer.name
-                    isRunningOvertime = false
+                    
+                    // Сразу отмечаем как завершённый (на тот случай, если его вдруг на ходу сменят на другой)
+                    timersManager.markTimerAsCompleted(currentTimer)
                 }
                 
-//                0 секунд -- это не таймер, а туду. Пока так.
+                // 0 секунд -- это не таймер, а туду. Пока так.
                 if totalSecondsToGo != 0 {
                     startSoundPlayer.play()
                 }
