@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45226E3F19725789006EA655 /* tone.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45226E3E19725789006EA655 /* tone.wav */; };
+		45226E41197257D0006EA655 /* gong.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45226E40197257D0006EA655 /* gong.wav */; };
 		45863A251961566B008BF8A5 /* StepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A241961566B008BF8A5 /* StepsViewController.swift */; };
 		45863A27196157DA008BF8A5 /* StepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A26196157DA008BF8A5 /* StepsManager.swift */; };
 		45A548011966920B00EBE4AC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A548001966920B00EBE4AC /* Timer.swift */; };
@@ -34,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		45226E3E19725789006EA655 /* tone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tone.wav; sourceTree = "<group>"; };
+		45226E40197257D0006EA655 /* gong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gong.wav; sourceTree = "<group>"; };
 		45863A241961566B008BF8A5 /* StepsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StepsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		45863A26196157DA008BF8A5 /* StepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsManager.swift; sourceTree = "<group>"; };
 		45A37FA4196FF52700346935 /* TimersListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimersListViewController.h; sourceTree = "<group>"; };
@@ -126,6 +130,8 @@
 		45D6776F195EB9E300048A8E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				45226E40197257D0006EA655 /* gong.wav */,
+				45226E3E19725789006EA655 /* tone.wav */,
 				45D6BA351963E1BE00C6A8B9 /* start.wav */,
 				45BDA9051962A6D900ED64E3 /* mario.wav */,
 				45D67770195EB9E300048A8E /* Info.plist */,
@@ -241,8 +247,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45226E3F19725789006EA655 /* tone.wav in Resources */,
 				45BDA9061962A6D900ED64E3 /* mario.wav in Resources */,
 				45D67777195EB9E300048A8E /* Images.xcassets in Resources */,
+				45226E41197257D0006EA655 /* gong.wav in Resources */,
 				45D6778D195EBA0500048A8E /* Main.storyboard in Resources */,
 				45D6BA361963E1BE00C6A8B9 /* start.wav in Resources */,
 			);

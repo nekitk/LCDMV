@@ -14,11 +14,11 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var nextButton: UIButton
     
     var finishSoundPlayer: AVAudioPlayer!
-    let finishSoundName = "mario.wav"
-    let finishSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("mario", ofType: "wav"))
+    let finishSoundName = "tone.wav"
+    let finishSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("tone", ofType: "wav"))
     
     var startSoundPlayer: AVAudioPlayer!
-    let startSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("start", ofType: "wav"))
+    let startSoundURL = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("gong", ofType: "wav"))
     
     var refreshTimer: NSTimer!
     
@@ -35,14 +35,14 @@ class CurrentTimerViewController: UIViewController {
     var lastLaunchMoment: NSDate!
     var secondsPassed: NSTimeInterval!
     
+    var timerState: Int?
+    
     // Timer states
     let TIMER_NOT_SET = 0
     let TIMER_SET_BUT_NOT_STARTED = 1
     let RUNNING = 2
     let PAUSED = 3
     let FINISHED = 4
-    
-    var timerState: Int?
     
     func changeStateTo(newState: Int) {
         var doChangeState = true
