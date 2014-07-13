@@ -8,7 +8,7 @@
 
 import XCTest
 
-class LifeTracker_take2Tests: XCTestCase {
+class LCDMVTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
