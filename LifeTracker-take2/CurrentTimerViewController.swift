@@ -12,6 +12,7 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var pauseButton: UIButton
     @IBOutlet var stopButton: UIButton
     @IBOutlet var nextButton: UIButton
+    @IBOutlet var doneButton: UIButton
     
     var finishSoundPlayer: AVAudioPlayer!
     let finishSoundName = "tone.wav"
@@ -103,8 +104,25 @@ class CurrentTimerViewController: UIViewController {
             if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
                 txtName.text = currentTimer.name
                 txtTime.enabled = true
+                
                 enableTheseButtons(runButtonEnabled: true)
                 updateTimeLabel(currentTimer.seconds)
+                
+                // Если время = 0, то это туду-задача
+                if currentTimer.seconds == 0 {
+                    doneButton.hidden = false
+                    
+                    runButton.hidden = true
+                    pauseButton.hidden = true
+                    stopButton.hidden = true
+                }
+                else {
+                    doneButton.hidden = true
+                    
+                    runButton.hidden = false
+                    pauseButton.hidden = false
+                    stopButton.hidden = false
+                }
             }
             else {
                 doChangeState = false
@@ -281,7 +299,10 @@ class CurrentTimerViewController: UIViewController {
         runButton.enabled = runButtonEnabled
         pauseButton.enabled = pauseButtonEnabled
         stopButton.enabled = stopButtonEnabled
+        
         nextButton.hidden = !nextButtonEnabled
+        
+        doneButton.hidden = true
     }
     
     override func viewDidLoad() {
