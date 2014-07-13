@@ -126,9 +126,11 @@ class TimersManager: NSObject {
             fetchLoop: for fetchedTimer in fetchedTimers {
                 let fetchedName = fetchedTimer.valueForKey("name") as String
                 let fetchedDuration = fetchedTimer.valueForKey("seconds") as Int
+                let fetchedCompleted = fetchedTimer.valueForKey("completed") as Bool
                 
-                //Delete timer with such a name
-                if (fetchedName == timer.name) && (fetchedDuration == timer.seconds)
+                // Ищем таймер с таким именем, длительностью и ещё не выполненный
+                // Если есть несколько таймеров с одинаковым именем и длительностью (например, перерыв 3 минуты), то отмечен выполненным будет первый найденный.
+                if !fetchedCompleted && (fetchedName == timer.name) && (fetchedDuration == timer.seconds)
                 {
                     fetchedTimer.setValue(true, forKey: "completed")
                     break fetchLoop
