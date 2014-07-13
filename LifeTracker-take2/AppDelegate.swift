@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  LifeTracker-take2
-//
-//  Created by neekitkah on 28.06.14.
-//  Copyright (c) 2014 nekitk. All rights reserved.
-//
-
 import UIKit
 import CoreData
 
@@ -76,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // If the model doesn't already exist, it is created from the application's model.
     var managedObjectModel: NSManagedObjectModel {
         if !_managedObjectModel {
-            let modelURL = NSBundle.mainBundle().URLForResource("LifeTracker_take2", withExtension: "momd")
+            let modelURL = NSBundle.mainBundle().URLForResource("LCDMV", withExtension: "momd")
             _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)
         }
         return _managedObjectModel!
@@ -87,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // If the coordinator doesn't already exist, it is created and the application's store added to it.
     var persistentStoreCoordinator: NSPersistentStoreCoordinator {
         if !_persistentStoreCoordinator {
-            let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("LifeTracker_take2.sqlite")
+            let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("LCDMV.sqlite")
             var error: NSError? = nil
             _persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
             if _persistentStoreCoordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil, error: &error) == nil {

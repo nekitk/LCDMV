@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		45226E3F19725789006EA655 /* tone.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45226E3E19725789006EA655 /* tone.wav */; };
 		45226E41197257D0006EA655 /* gong.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45226E40197257D0006EA655 /* gong.wav */; };
-		45863A251961566B008BF8A5 /* StepsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A241961566B008BF8A5 /* StepsViewController.swift */; };
-		45863A27196157DA008BF8A5 /* StepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45863A26196157DA008BF8A5 /* StepsManager.swift */; };
 		45A548011966920B00EBE4AC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A548001966920B00EBE4AC /* Timer.swift */; };
 		45BDA9061962A6D900ED64E3 /* mario.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45BDA9051962A6D900ED64E3 /* mario.wav */; };
 		45D67772195EB9E300048A8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67771195EB9E300048A8E /* AppDelegate.swift */; };
@@ -38,8 +36,6 @@
 /* Begin PBXFileReference section */
 		45226E3E19725789006EA655 /* tone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tone.wav; sourceTree = "<group>"; };
 		45226E40197257D0006EA655 /* gong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gong.wav; sourceTree = "<group>"; };
-		45863A241961566B008BF8A5 /* StepsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StepsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		45863A26196157DA008BF8A5 /* StepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsManager.swift; sourceTree = "<group>"; };
 		45A37FA4196FF52700346935 /* TimersListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimersListViewController.h; sourceTree = "<group>"; };
 		45A548001966920B00EBE4AC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45BDA9051962A6D900ED64E3 /* mario.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mario.wav; sourceTree = "<group>"; };
@@ -81,7 +77,6 @@
 			isa = PBXGroup;
 			children = (
 				45D67792195EBC3400048A8E /* TimersManager.swift */,
-				45863A26196157DA008BF8A5 /* StepsManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -165,7 +160,6 @@
 				45A37FA4196FF52700346935 /* TimersListViewController.h */,
 				45D67790195EBA4100048A8E /* AddTimerViewController.swift */,
 				45D67795195EC33E00048A8E /* CurrentTimerViewController.swift */,
-				45863A241961566B008BF8A5 /* StepsViewController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -273,8 +267,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D67791195EBA4100048A8E /* AddTimerViewController.swift in Sources */,
-				45863A251961566B008BF8A5 /* StepsViewController.swift in Sources */,
-				45863A27196157DA008BF8A5 /* StepsManager.swift in Sources */,
 				45D6778F195EBA3000048A8E /* TimersListViewController.swift in Sources */,
 				45D67793195EBC3400048A8E /* TimersManager.swift in Sources */,
 				45D67775195EB9E300048A8E /* LCDMV.xcdatamodeld in Sources */,

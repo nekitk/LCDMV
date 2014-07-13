@@ -44,6 +44,23 @@ class CurrentTimerViewController: UIViewController {
     let PAUSED = 3
     let FINISHED = 4
     
+    @IBAction func runButtonClick() {
+        changeStateTo(RUNNING)
+    }
+    
+    @IBAction func pauseButtonClick() {
+        changeStateTo(PAUSED)
+    }
+    
+    @IBAction func stopButtonClick() {
+        changeStateTo(FINISHED)
+    }
+    
+    @IBAction func nextButtonClick(sender: AnyObject) {
+        timersManager.moveToNextTimer()
+        changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+    }
+    
     func changeStateTo(newState: Int) {
         var doChangeState = true
         
@@ -160,23 +177,18 @@ class CurrentTimerViewController: UIViewController {
                 // Enable phone locking again
                 UIApplication.sharedApplication().idleTimerDisabled = false
             
-                // Flooring seconds to compare with total time to go and to track it
+                // Flooring seconds to compare with total time to go
                 secondsPassed = floor(secondsPassed)
                 
-                // For fixed timer: if calculated duration is bigger than it duration
-                // This means that timer transits to FINISHED after actual finishing moment
-                // It can occur if phone is locked when timer has finished
-                if !overtimeRunningAllowed && secondsPassed > totalSecondsToGo {
-                    secondsPassed = totalSecondsToGo
-                }
-                else {
-                    // Play sound once for NOT ENDLESS timer
-                    // Play sound only if timer transits to FINISHED state now (not after device unlocking)
+                // Цель всего нижеследующего шаманства в том, чтобы звук окончания играл только в тех случаях, когда приложение открыто. И не играл в тех случаях, когда таймер истёк в то время, пока телефон был заблокирован.
+                // Если это бесконечный таймер, то в завершённое состояние он переходит только по велению пользователя. А значит звук нужно играть всегда в таких случаях.
+                if overtimeRunningAllowed {
                     finishSoundPlayer.play()
                 }
-                
-                // Track time spent
-                stepsManager.trackTimer(timerName, launchDate: firstLaunchMoment, duration: Int(secondsPassed))
+                // Если же это конечный таймер, то играть звук нужно только в том случае, когда прошедшее время меньше или равно назначенному. Если оно больше, то это свидетельствует о том, что приложение не было активно в то время, когда истёк таймер. При этом пользователю пришло оповещение со звуком, так что не нужно его проигрывать при открытии приложения, это раздражает.
+                else if secondsPassed <= totalSecondsToGo {
+                    finishSoundPlayer.play()
+                }
                 
                 // Reset timer
                 firstLaunchMoment = nil
@@ -240,6 +252,9 @@ class CurrentTimerViewController: UIViewController {
             }
             else {
                 changeStateTo(FINISHED)
+                
+                // Выходим, чтобы не обновилась надпись со временем, в которой рисуется смайлик
+                return
             }
         }
         
@@ -260,23 +275,6 @@ class CurrentTimerViewController: UIViewController {
         }
         
         txtTime.text = "\(minutesToShow):\(secondsString)"
-    }
-
-    @IBAction func runButtonClick() {
-        changeStateTo(RUNNING)
-    }
-    
-    @IBAction func pauseButtonClick() {
-        changeStateTo(PAUSED)
-    }
-    
-    @IBAction func stopButtonClick() {
-        changeStateTo(FINISHED)
-    }
-    
-    @IBAction func nextButtonClick(sender: AnyObject) {
-        timersManager.moveToNextTimer()
-        changeStateTo(TIMER_SET_BUT_NOT_STARTED)
     }
     
     func enableTheseButtons(runButtonEnabled: Bool = false, pauseButtonEnabled: Bool = false, stopButtonEnabled: Bool = false, nextButtonEnabled: Bool = false) {
