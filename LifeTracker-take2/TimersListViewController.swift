@@ -16,9 +16,11 @@ import UIKit
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: nil)
-        
         let timer = timersManager.getTimerByIndex(indexPath.row)
+        
+        // В зависимости от того, выполнена задача или ещё нет, по-разному оформляем её клетку
+        let cellIdentifier: String = timer.completed ? "CompletedTimerPrototypeCell" : "TimerPrototypeCell"
+        let cell = timersTable.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as UITableViewCell
         
         cell.textLabel.text = timer.name
         
@@ -30,27 +32,16 @@ import UIKit
             cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
         }
         
-        cell.detailTextLabel.textColor = UIColor(white: 0.3, alpha: 1)
-        
-        if timer.completed {
-            cell.textLabel.textColor = UIColor.whiteColor()
-            cell.detailTextLabel.textColor = UIColor(white: 0.7, alpha: 1)
-            cell.backgroundColor = UIColor(red: 0, green: 0.5, blue: 0.5, alpha: 1)
-        }
-        
         return cell
     }
     
     // Cell click handling. Shoud be TableView's delegate to work.
-    func tableView(tableView: UITableView!, shouldHighlightRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
-        
+    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         // Save clicked timer to current
         timersManager.setCurrent(indexPath.row)
         
         // Move to current timer tab
         self.tabBarController.selectedIndex = 1
-        
-        return false
     }
     
     // Timer deletion
