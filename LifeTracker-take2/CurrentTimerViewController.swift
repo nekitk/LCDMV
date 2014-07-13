@@ -216,12 +216,16 @@ class CurrentTimerViewController: UIViewController {
     func updateTime() {
         let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
         let secondsLeft = (totalSecondsToGo - secondsPassed) - secondsPassedSinceLastLaunch
-        updateTimeLabel(Int(ceil(secondsLeft)))
+        
+        var timeToShow = Int(ceil(secondsLeft))
         
         // overtime not allowed -> Finished
         // overtime allowed -> play sound once and continue ticking
         if secondsLeft <= 0 {
             if overtimeRunningAllowed {
+                
+                // Если время истекло, а таймер бесконечный, то показываем сколько времени прошло всего с самого начала
+                timeToShow = Int(totalSecondsToGo) + abs(Int(secondsLeft))
                 
                 // This bool is needed to play sound only once
                 if !isRunningOvertime {
@@ -238,15 +242,11 @@ class CurrentTimerViewController: UIViewController {
                 changeStateTo(FINISHED)
             }
         }
+        
+        updateTimeLabel(timeToShow)
     }
     
     func updateTimeLabel(var timeInSeconds: Int) {
-        var prefix = ""
-        if timeInSeconds < 0 {
-            prefix = "+"
-            timeInSeconds = abs(timeInSeconds)
-        }
-        
         let minutesToShow = timeInSeconds / 60
         let secondsToShow = timeInSeconds % 60
     
@@ -259,7 +259,7 @@ class CurrentTimerViewController: UIViewController {
             secondsString = String(secondsToShow)
         }
         
-        txtTime.text = "\(prefix)\(minutesToShow):\(secondsString)"
+        txtTime.text = "\(minutesToShow):\(secondsString)"
     }
 
     @IBAction func runButtonClick() {
