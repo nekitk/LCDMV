@@ -12,24 +12,36 @@ import UIKit
     // UITableViewDataSource implementation
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return timersManager.getTimersCount()
+        let timersCount = timersManager.getTimersCount()
+        if timersCount == 0 {
+            return 0
+        }
+        else {
+            return timersManager.getTimersCount() + 1
+        }
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let timer = timersManager.getTimerByIndex(indexPath.row)
-        
-        // В зависимости от того, выполнена задача или ещё нет, по-разному оформляем её клетку
-        let cellIdentifier: String = timer.completed ? "CompletedTimerPrototypeCell" : "TimerPrototypeCell"
-        let cell = timersTable.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as UITableViewCell
-        
-        cell.textLabel.text = timer.name
-        
-        let secondsWithoutMinutes = timer.seconds % 60
-        let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"
-        cell.detailTextLabel.text = "\(timer.seconds / 60) min\(secondsString)"
-        
-        if timer.isContinuous {
-            cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
+        var cell: UITableViewCell!
+        if indexPath.row == timersManager.getTimersCount() {
+            cell = timersTable.dequeueReusableCellWithIdentifier("DeleteAllCompletedPrototypeCell", forIndexPath: indexPath) as UITableViewCell
+        }
+        else {
+            let timer = timersManager.getTimerByIndex(indexPath.row)
+            
+            // В зависимости от того, выполнена задача или ещё нет, по-разному оформляем её клетку
+            let cellIdentifier: String = timer.completed ? "CompletedTimerPrototypeCell" : "TimerPrototypeCell"
+            cell = timersTable.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as UITableViewCell
+            
+            cell.textLabel.text = timer.name
+            
+            let secondsWithoutMinutes = timer.seconds % 60
+            let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"
+            cell.detailTextLabel.text = "\(timer.seconds / 60) min\(secondsString)"
+            
+            if timer.isContinuous {
+                cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
+            }
         }
         
         return cell
