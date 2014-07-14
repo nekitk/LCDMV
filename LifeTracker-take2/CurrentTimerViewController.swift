@@ -34,7 +34,7 @@ class CurrentTimerViewController: UIViewController {
     
     var firstLaunchMoment: NSDate!
     var lastLaunchMoment: NSDate!
-    var secondsPassed: NSTimeInterval!
+    var secondsPassed: NSTimeInterval = 0
     
     var timerState: Int?
     
@@ -102,11 +102,18 @@ class CurrentTimerViewController: UIViewController {
             // Timer set -> Timer set: changing current timer
             // Finished -> Timer set: changing finished timer
             if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
-                txtName.text = currentTimer.name
+                enableTheseButtons(runButtonEnabled: true)
                 txtTime.enabled = true
                 
-                enableTheseButtons(runButtonEnabled: true)
-                updateTimeLabel(currentTimer.seconds)
+                // Копируем все данные таймера.
+                // В таком случае нам не страшно удаление или изменение
+                // Это никак не повлияет на тиканье.
+                totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
+                overtimeRunningAllowed = currentTimer.isContinuous
+                timerName = currentTimer.name
+                
+                txtName.text = currentTimer.name
+                updateTimeLabel(Int(totalSecondsToGo))
                 
                 // Если время = 0 и конечный, то это туду-задача
                 if currentTimer.seconds == 0 && !currentTimer.isContinuous {
@@ -136,20 +143,9 @@ class CurrentTimerViewController: UIViewController {
                 enableTheseButtons(pauseButtonEnabled: true, stopButtonEnabled: true)
                 
                 lastLaunchMoment = NSDate()
-                
 
                 if !firstLaunchMoment {
                     firstLaunchMoment = lastLaunchMoment
-                    
-                    secondsPassed = 0
-                    isRunningOvertime = false
-                    
-                    // При первом запуске копируем все данные таймера.
-                    // В таком случае нам не страшно удаление или изменение
-                    // Это никак не повлияет на тиканье.
-                    totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
-                    overtimeRunningAllowed = currentTimer.isContinuous
-                    timerName = currentTimer.name
                     
                     // Сразу отмечаем как завершённый (на тот случай, если его вдруг на ходу сменят на другой)
                     timersManager.markTimerAsCompleted(currentTimer)
@@ -194,7 +190,7 @@ class CurrentTimerViewController: UIViewController {
                 
                 // Enable phone locking again
                 UIApplication.sharedApplication().idleTimerDisabled = false
-            
+                
                 // Flooring seconds to compare with total time to go
                 secondsPassed = floor(secondsPassed)
                 
@@ -208,8 +204,10 @@ class CurrentTimerViewController: UIViewController {
                     finishSoundPlayer.play()
                 }
                 
-                // Reset timer
+                // Сбрасываем состояние таймера
                 firstLaunchMoment = nil
+                secondsPassed = 0
+                isRunningOvertime = false
             }
             else {
                 doChangeState = false
@@ -245,17 +243,12 @@ class CurrentTimerViewController: UIViewController {
     
     func updateTime() {
         let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
-        let secondsLeft = (totalSecondsToGo - secondsPassed) - secondsPassedSinceLastLaunch
-        
-        var timeToShow = Int(ceil(secondsLeft))
+        let secondsLeft = Int(ceil((totalSecondsToGo - secondsPassed) - secondsPassedSinceLastLaunch))
         
         // overtime not allowed -> Finished
         // overtime allowed -> play sound once and continue ticking
         if secondsLeft <= 0 {
             if overtimeRunningAllowed {
-                
-                // Если время истекло, а таймер бесконечный, то показываем сколько времени прошло всего с самого начала
-                timeToShow = Int(totalSecondsToGo) + abs(Int(secondsLeft))
                 
                 // This bool is needed to play sound only once
                 if !isRunningOvertime {
@@ -263,7 +256,7 @@ class CurrentTimerViewController: UIViewController {
                     
                     // Play sound once for ENDLESS timer
                     // Play finish sound only if time ran out now (not when phone was locked)
-                    if ceil(secondsLeft) >= 0 {
+                    if secondsLeft >= 0 {
                         finishSoundPlayer.play()
                     }
                 }
@@ -276,12 +269,25 @@ class CurrentTimerViewController: UIViewController {
             }
         }
         
+        // Заморачиваемся на то, какое время показывать на экране
+        
+        var timeToShow: Int!
+        
+        if overtimeRunningAllowed {
+            // Если таймер бесконечный, то показываем, сколько времени прошло с его запуска
+            timeToShow = Int(secondsPassed + secondsPassedSinceLastLaunch)
+        }
+        else {
+            // Если таймер конечный, то показываем, сколько осталось
+            timeToShow = secondsLeft
+        }
+        
         updateTimeLabel(timeToShow)
     }
     
-    func updateTimeLabel(var timeInSeconds: Int) {
-        let minutesToShow = timeInSeconds / 60
-        let secondsToShow = timeInSeconds % 60
+    func updateTimeLabel(timeToShow: Int) {
+        let minutesToShow = timeToShow / 60
+        let secondsToShow = timeToShow % 60
     
         // Adding zeroes to little seconds
         var secondsString: String!
