@@ -108,8 +108,8 @@ class CurrentTimerViewController: UIViewController {
                 enableTheseButtons(runButtonEnabled: true)
                 updateTimeLabel(currentTimer.seconds)
                 
-                // Если время = 0, то это туду-задача
-                if currentTimer.seconds == 0 {
+                // Если время = 0 и конечный, то это туду-задача
+                if currentTimer.seconds == 0 && !currentTimer.isContinuous {
                     doneButton.hidden = false
                     
                     runButton.hidden = true
