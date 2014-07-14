@@ -117,13 +117,18 @@ class CurrentTimerViewController: UIViewController {
                 
                 // Если время = 0 и конечный, то это туду-задача
                 if currentTimer.seconds == 0 && !currentTimer.isContinuous {
+                    txtTime.hidden = true
+                    
                     doneButton.hidden = false
                     
                     runButton.hidden = true
                     pauseButton.hidden = true
                     stopButton.hidden = true
                 }
+                // А иначе это таймер
                 else {
+                    txtTime.hidden = false
+                    
                     doneButton.hidden = true
                     
                     runButton.hidden = false
