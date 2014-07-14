@@ -7,8 +7,6 @@ class TimersManager: NSObject {
     
     var timers = [Timer]()
     
-    var currentTimerIndex: Int?
-    
     init() {
         super.init()
         
@@ -23,18 +21,22 @@ class TimersManager: NSObject {
         return timers.count
     }
     
-    func hasNext() -> Bool {
-        if currentTimerIndex && currentTimerIndex! < (getTimersCount() - 1) {
-            return true
+    func hasNextUncompleted() -> Bool {
+        for timer in timers {
+            if !timer.completed {
+                return true
+            }
         }
-        else {
-            return false
-        }
+        
+        return false
     }
     
     func moveToNextTimer() {
-        if hasNext() {
-            setCurrent(currentTimerIndex! + 1)
+        for (index, timer: Timer) in enumerate(timers) {
+            if !timer.completed {
+                currentTimer = timer
+                return
+            }
         }
     }
     
@@ -71,11 +73,6 @@ class TimersManager: NSObject {
         
         // Reload timers list
         loadTimersFromCoreData()
-    }
-    
-    func setCurrent(index: Int) {
-        currentTimerIndex = index
-        currentTimer = timers[currentTimerIndex!]
     }
     
     func removeTimer(timerToRemoveIndex: Int) {

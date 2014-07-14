@@ -13,6 +13,7 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var stopButton: UIButton
     @IBOutlet var nextButton: UIButton
     @IBOutlet var doneButton: UIButton
+    @IBOutlet var goBackButton: UIButton
     
     var finishSoundPlayer: AVAudioPlayer!
     let finishSoundName = "tone.wav"
@@ -59,7 +60,12 @@ class CurrentTimerViewController: UIViewController {
     
     @IBAction func nextButtonClick(sender: AnyObject) {
         timersManager.moveToNextTimer()
-        changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+    }
+    
+    @IBAction func quitClick() {
+        // Вырубаем оповещения, если выходим из Потока.
+        // По идее всё остальное должно вырубиться само.
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
     func changeStateTo(newState: Int) {
@@ -151,9 +157,6 @@ class CurrentTimerViewController: UIViewController {
 
                 if !firstLaunchMoment {
                     firstLaunchMoment = lastLaunchMoment
-                    
-                    // Сразу отмечаем как завершённый (на тот случай, если его вдруг на ходу сменят на другой)
-                    timersManager.markTimerAsCompleted(currentTimer)
                 }
                 
                 // Если 0 секунд и не бесконечный, то это не таймер, а туду, и звук играть не надо. Пока так.
@@ -186,11 +189,15 @@ class CurrentTimerViewController: UIViewController {
                 
                 txtTime.text = ":)"
                 
-                if timersManager.currentTimerIndex && timersManager.hasNext() {
+                // Отмечаем как завершённый
+                timersManager.markTimerAsCompleted(currentTimer)
+                
+                // Показываем кнопку "Следующий", если он наличествует
+                if timersManager.hasNextUncompleted() {
                     enableTheseButtons(nextButtonEnabled: true)
                 }
                 else {
-                    enableTheseButtons()
+                    enableTheseButtons(goBackButtonEnabled: true)
                 }
                 
                 // Enable phone locking again
@@ -320,18 +327,18 @@ class CurrentTimerViewController: UIViewController {
         txtTime.text = "\(minutesToShow):\(secondsString)"
     }
     
-    func enableTheseButtons(runButtonEnabled: Bool = false, pauseButtonEnabled: Bool = false, stopButtonEnabled: Bool = false, nextButtonEnabled: Bool = false) {
+    func enableTheseButtons(runButtonEnabled: Bool = false, pauseButtonEnabled: Bool = false, stopButtonEnabled: Bool = false, nextButtonEnabled: Bool = false, goBackButtonEnabled: Bool = false) {
         runButton.enabled = runButtonEnabled
         pauseButton.enabled = pauseButtonEnabled
         stopButton.enabled = stopButtonEnabled
         
         nextButton.hidden = !nextButtonEnabled
+        goBackButton.hidden = !goBackButtonEnabled
         
         doneButton.hidden = true
     }
     
     override func viewDidLoad() {
-        
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
         finishSoundPlayer.prepareToPlay()
@@ -347,5 +354,4 @@ class CurrentTimerViewController: UIViewController {
             changeStateTo(TIMER_SET_BUT_NOT_STARTED)
         }
     }
-    
 }

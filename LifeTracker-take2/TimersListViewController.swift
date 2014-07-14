@@ -24,7 +24,14 @@ import UIKit
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         var cell: UITableViewCell!
         if indexPath.row == timersManager.getTimersCount() {
-            cell = timersTable.dequeueReusableCellWithIdentifier("DeleteAllCompletedPrototypeCell", forIndexPath: indexPath) as UITableViewCell
+
+            // Если есть незавершённые таймеры, показываем кнопку "Старт", а иначе -- "Удалить все"
+            if timersManager.hasNextUncompleted() {
+                cell = timersTable.dequeueReusableCellWithIdentifier("StartFlowPrototypeCell", forIndexPath: indexPath) as UITableViewCell
+            }
+            else {
+                cell = timersTable.dequeueReusableCellWithIdentifier("DeleteAllCompletedPrototypeCell", forIndexPath: indexPath) as UITableViewCell
+            }
         }
         else {
             let timer = timersManager.getTimerByIndex(indexPath.row)
@@ -47,15 +54,6 @@ import UIKit
         return cell
     }
     
-    // Cell click handling. Shoud be TableView's delegate to work.
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
-        // Save clicked timer to current
-        timersManager.setCurrent(indexPath.row)
-        
-        // Move to current timer tab
-        self.tabBarController.selectedIndex = 1
-    }
-    
     // Timer deletion
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
@@ -69,11 +67,14 @@ import UIKit
         
     }
     
-    // Удалить все таймеры
-    //todo: окно подтверждения
+    // Удалить все завершённые таймеры
     @IBAction func deleteAllCompletedTimers(sender: AnyObject) {
         timersManager.deleteAllCompleted()
         timersTable.reloadData()
+    }
+    
+    @IBAction func startFlowButtonClick() {
+        timersManager.moveToNextTimer()
     }
     
 }
