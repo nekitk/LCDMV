@@ -31,6 +31,22 @@ class AddTimerViewController: UIViewController {
         }
     }
     
+    @IBAction func setPredefinedTimeClick(sender: AnyObject) {
+        let buttonClicked = sender as UIButton
+        let buttonName = buttonClicked.titleLabel.text
+        
+        if let timeToSet = buttonName.toInt() {
+            txtMinutes.text = String(timeToSet)
+            
+            if timeToSet >= 8 {
+                boxContinuous.on = true
+            }
+            else {
+                boxContinuous.on = false
+            }
+        }
+    }
+    
     // Hide keyboard on touch
     override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
         self.view.endEditing(true)
