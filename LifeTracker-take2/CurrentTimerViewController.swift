@@ -235,14 +235,27 @@ class CurrentTimerViewController: UIViewController {
         // SecondsLeft became less than 0 when timer is running overtime
         if secondsLeft > 0 {
 
-            // Schedule local notification
+            // Schedule main notification
             let timerEndNotification = UILocalNotification()
             timerEndNotification.fireDate = NSDate(timeIntervalSinceNow: secondsLeft)
             timerEndNotification.timeZone = NSTimeZone.defaultTimeZone()
-            timerEndNotification.alertBody = "Timer \(timerName) ended"
+            timerEndNotification.alertBody = "\(timerName) усё."
             timerEndNotification.soundName = finishSoundName
             
             UIApplication.sharedApplication().scheduleLocalNotification(timerEndNotification)
+            
+            // Дополнительное оповещение на тот случай, если про таймер забыли
+            
+            // Таймаут 3 минуты
+            let timeout = NSTimeInterval(180)
+            
+            let secondNotification = UILocalNotification()
+            secondNotification.fireDate = NSDate(timeIntervalSinceNow: secondsLeft + timeout)
+            secondNotification.timeZone = NSTimeZone.defaultTimeZone()
+            secondNotification.alertBody = "Куку!"
+            secondNotification.soundName = finishSoundName
+            
+            UIApplication.sharedApplication().scheduleLocalNotification(secondNotification)
         }
     }
     
