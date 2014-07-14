@@ -25,7 +25,7 @@ class CurrentTimerViewController: UIViewController {
     
     // Better not to use optionals with Bools
     // if optionalBool checks optional, not the value of Bool itself
-    var overtimeRunningAllowed: Bool = false
+    var timerIsContinuous: Bool = false
     var isRunningOvertime: Bool = false
 
     // Store these in case timer changing
@@ -109,7 +109,7 @@ class CurrentTimerViewController: UIViewController {
                 // В таком случае нам не страшно удаление или изменение
                 // Это никак не повлияет на тиканье.
                 totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
-                overtimeRunningAllowed = currentTimer.isContinuous
+                timerIsContinuous = currentTimer.isContinuous
                 timerName = currentTimer.name
                 
                 txtName.text = currentTimer.name
@@ -156,8 +156,8 @@ class CurrentTimerViewController: UIViewController {
                     timersManager.markTimerAsCompleted(currentTimer)
                 }
                 
-                // 0 секунд -- это не таймер, а туду. Пока так.
-                if totalSecondsToGo != 0 {
+                // Если 0 секунд и не бесконечный, то это не таймер, а туду, и звук играть не надо. Пока так.
+                if timerIsContinuous || totalSecondsToGo != 0 {
                     startSoundPlayer.play()
                 }
                 
@@ -201,7 +201,7 @@ class CurrentTimerViewController: UIViewController {
                 
                 // Цель всего нижеследующего шаманства в том, чтобы звук окончания играл только в тех случаях, когда приложение открыто. И не играл в тех случаях, когда таймер истёк в то время, пока телефон был заблокирован.
                 // Если это бесконечный таймер, то в завершённое состояние он переходит только по велению пользователя. А значит звук нужно играть всегда в таких случаях.
-                if overtimeRunningAllowed {
+                if timerIsContinuous {
                     finishSoundPlayer.play()
                 }
                 // Если же это конечный таймер, то играть звук нужно только в том случае, когда прошедшее время меньше или равно назначенному. Если оно больше, то это свидетельствует о том, что приложение не было активно в то время, когда истёк таймер. При этом пользователю пришло оповещение со звуком, так что не нужно его проигрывать при открытии приложения, это раздражает.
@@ -253,15 +253,16 @@ class CurrentTimerViewController: UIViewController {
         // overtime not allowed -> Finished
         // overtime allowed -> play sound once and continue ticking
         if secondsLeft <= 0 {
-            if overtimeRunningAllowed {
+            if timerIsContinuous {
                 
                 // This bool is needed to play sound only once
                 if !isRunningOvertime {
                     isRunningOvertime = true
                     
-                    // Play sound once for ENDLESS timer
-                    // Play finish sound only if time ran out now (not when phone was locked)
-                    if secondsLeft >= 0 {
+                    // Для бесконечного таймера играем звук в том случае, когда соблюдены оба условия:
+                    // 1. Это не таймер с нулевой длительностью. Для нулевого таймера звук играть не надо, он просто начинает тикать с нуля вверх.
+                    // 2. Таймер истёк прямо сейчас, а не в то время, когда телефон был заблокирован. Об этом свидетельствует то, что количество оставшихся секунд сравнялось нулю.
+                    if totalSecondsToGo != 0 && secondsLeft == 0{
                         finishSoundPlayer.play()
                     }
                 }
@@ -278,7 +279,7 @@ class CurrentTimerViewController: UIViewController {
         
         var timeToShow: Int!
         
-        if overtimeRunningAllowed {
+        if timerIsContinuous {
             // Если таймер бесконечный, то показываем, сколько времени прошло с его запуска
             timeToShow = Int(secondsPassed + secondsPassedSinceLastLaunch)
         }
