@@ -62,6 +62,15 @@ import UIKit
         }
     }
     
+    func tableView(tableView: UITableView!, editingStyleForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCellEditingStyle {
+        if indexPath.row >= timersManager.getTimersCount() {
+            return UITableViewCellEditingStyle.None
+        }
+        else {
+            return UITableViewCellEditingStyle.Delete
+        }
+    }
+    
     // Back transition from adding timer screen
     @IBAction func unwindToTimers(segue: UIStoryboardSegue) {
         
