@@ -207,6 +207,9 @@ class CurrentTimerViewController: UIViewController {
                     enableTheseButtons(goBackButtonEnabled: true)
                 }
                 
+                // Прячем, чтобы была видно только рожица
+                txtTotalTimerTime.hidden = true
+                
                 // Enable phone locking again
                 UIApplication.sharedApplication().idleTimerDisabled = false
                 
@@ -277,6 +280,22 @@ class CurrentTimerViewController: UIViewController {
         let secondsPassedSinceLastLaunch = NSDate().timeIntervalSinceDate(lastLaunchMoment)
         let secondsLeft = Int(ceil((totalSecondsToGo - secondsPassed) - secondsPassedSinceLastLaunch))
         
+        // Заморачиваемся на то, какое время показывать на экране
+        
+        var timeToShow: Int!
+        
+        if timerIsContinuous && isRunningOvertime {
+            // Если таймер бесконечный и превысил свой лимит, то показываем, сколько времени прошло с его запуска
+            timeToShow = Int(secondsPassed + secondsPassedSinceLastLaunch)
+        }
+        else {
+            // В остальных случаях показываем, сколько осталось
+            timeToShow = secondsLeft
+        }
+        
+        updateTimeLabel(timeToShow)
+        
+        
         // overtime not allowed -> Finished
         // overtime allowed -> play sound once and continue ticking
         if secondsLeft <= 0 {
@@ -301,21 +320,6 @@ class CurrentTimerViewController: UIViewController {
                 return
             }
         }
-        
-        // Заморачиваемся на то, какое время показывать на экране
-        
-        var timeToShow: Int!
-        
-        if timerIsContinuous && isRunningOvertime {
-            // Если таймер бесконечный и превысил свой лимит, то показываем, сколько времени прошло с его запуска
-            timeToShow = Int(secondsPassed + secondsPassedSinceLastLaunch)
-        }
-        else {
-            // В остальных случаях показываем, сколько осталось
-            timeToShow = secondsLeft
-        }
-        
-        updateTimeLabel(timeToShow)
     }
     
     func updateTimeLabel(timeToShow: Int) {
@@ -361,6 +365,9 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject) {
+        
+        // В любом случае разрешаем экрану лочиться
+        UIApplication.sharedApplication().idleTimerDisabled = false
         
         // Готовимся к возвращению на экран со списком таймеров
         if sender as NSObject == quitButton {
