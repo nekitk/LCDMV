@@ -7,6 +7,7 @@ class CurrentTimerViewController: UIViewController {
     
     @IBOutlet var txtName: UILabel
     @IBOutlet var txtTime: UILabel
+    @IBOutlet var txtTotalTimerTime: UILabel
     
     @IBOutlet var runButton: UIButton
     @IBOutlet var pauseButton: UIButton
@@ -14,6 +15,8 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var nextButton: UIButton
     @IBOutlet var doneButton: UIButton
     @IBOutlet var goBackButton: UIButton
+    
+    @IBOutlet var timerControls: UIView
     
     var finishSoundPlayer: AVAudioPlayer!
     let finishSoundName = "tone.wav"
@@ -111,6 +114,21 @@ class CurrentTimerViewController: UIViewController {
                 enableTheseButtons(runButtonEnabled: true)
                 txtTime.enabled = true
                 
+                if currentTimer.seconds != 0 {
+                    txtTotalTimerTime.hidden = false
+                    txtTotalTimerTime.text = "\(currentTimer.seconds / 60) min"
+                    
+                    let timerSeconds = currentTimer.seconds % 60
+                    if timerSeconds != 0 {
+                        txtTotalTimerTime.text = txtTotalTimerTime.text + "\(timerSeconds)"
+                    }
+                    
+                    txtTotalTimerTime.text = "(\(txtTotalTimerTime.text))"
+                }
+                else {
+                    txtTotalTimerTime.hidden = true
+                }
+                
                 // Копируем все данные таймера.
                 // В таком случае нам не страшно удаление или изменение
                 // Это никак не повлияет на тиканье.
@@ -124,22 +142,16 @@ class CurrentTimerViewController: UIViewController {
                 // Если время = 0 и конечный, то это туду-задача
                 if currentTimer.seconds == 0 && !currentTimer.isContinuous {
                     txtTime.hidden = true
+                    timerControls.hidden = true
                     
                     doneButton.hidden = false
-                    
-                    runButton.hidden = true
-                    pauseButton.hidden = true
-                    stopButton.hidden = true
                 }
                 // А иначе это таймер
                 else {
                     txtTime.hidden = false
+                    timerControls.hidden = false
                     
                     doneButton.hidden = true
-                    
-                    runButton.hidden = false
-                    pauseButton.hidden = false
-                    stopButton.hidden = false
                 }
             }
             else {
