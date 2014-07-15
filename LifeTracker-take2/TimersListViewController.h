@@ -2,6 +2,7 @@
 
 @interface TimersListViewController (Workaround)
 
-- (IBAction)unwindToTimers: (UIStoryboardSegue *)segue;
+- (IBAction)unwindToTimersFromFlowScreen: (UIStoryboardSegue *)segue;
+- (IBAction)unwindToTimersFromAddScreen: (UIStoryboardSegue *)segue;
 
 @end

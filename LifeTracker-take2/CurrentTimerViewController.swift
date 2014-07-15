@@ -65,12 +65,6 @@ class CurrentTimerViewController: UIViewController {
         timersManager.moveToNextTimer()
     }
     
-    @IBAction func quitClick() {
-        // Вырубаем оповещения, если выходим из Потока.
-        // По идее всё остальное должно вырубиться само.
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
-    }
-    
     func changeStateTo(newState: Int) {
         var doChangeState = true
         

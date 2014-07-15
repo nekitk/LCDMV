@@ -89,7 +89,16 @@ import UIKit
     }
     
     // Back transition from adding timer screen
-    @IBAction func unwindToTimers(segue: UIStoryboardSegue) {
+    @IBAction func unwindToTimersFromFlowScreen(segue: UIStoryboardSegue) {
+        
+        // Если возвращаемся к таймерам из окна Потока, то нужно отменить все оповещения, так как поток при этом останавливается
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        
+        // А заодно и таймер обнуляем на всякий случай
+        currentTimer = nil
+    }
+    
+    @IBAction func unwindToTimersFromAddScreen(segue: UIStoryboardSegue) {
         
     }
     

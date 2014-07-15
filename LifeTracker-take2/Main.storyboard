@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.7" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="KCL-LJ-hZ3">
     <dependencies>
-        <deployment defaultVersion="1808" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
     </dependencies>
     <scenes>
@@ -13,15 +12,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ldB-BQ-dn2">
-                                <rect key="frame" x="20" y="66" width="280" height="71"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <string key="text">Name
-(long name)</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X min" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dbg-3T-vO2">
                                 <rect key="frame" x="20" y="145" width="280" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -116,14 +106,22 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="108"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ldB-BQ-dn2">
+                                <rect key="frame" x="20" y="66" width="280" height="71"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <string key="text">Name
+(long name)</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Flow" id="yPd-re-JB0">
                         <barButtonItem key="leftBarButtonItem" title="Quit" id="RSP-oi-A1w">
                             <connections>
-                                <action selector="quitClick" destination="jqu-ez-ehU" id="0El-z9-b4m"/>
-                                <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimers:" id="FmG-zH-AQj"/>
+                                <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimersFromFlowScreen:" id="yyr-Fw-6ls"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -143,14 +141,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NDd-gG-4xb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Mv1-zz-KY1" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="554" y="1524"/>
+            <point key="canvasLocation" x="22" y="1474"/>
         </scene>
         <!--Add task-->
         <scene sceneID="Xex-Bp-qcI">
             <objects>
                 <viewController id="vNY-uK-amK" customClass="AddTimerViewController" customModule="LCDMV" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PIb-10-yoa">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" minimumFontSize="17" id="0gU-Xc-jaI">
@@ -249,7 +247,7 @@
                                 </state>
                                 <connections>
                                     <action selector="addButtonClick" destination="vNY-uK-amK" eventType="touchUpInside" id="fdS-8G-daH"/>
-                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="LKV-8L-fpM"/>
+                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimersFromAddScreen:" id="Q8Z-An-No2"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Gzv-SX-H7q">
@@ -269,7 +267,7 @@
                     <navigationItem key="navigationItem" title="Add task" id="nbE-wH-1ra">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="YSf-fN-coN">
                             <connections>
-                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="UYZ-Ip-3Nu"/>
+                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimersFromAddScreen:" id="Rlk-Qc-17W"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -283,7 +281,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WtD-b1-qkS" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="oNt-vv-Hqj" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="878" y="867"/>
+            <point key="canvasLocation" x="512" y="867"/>
         </scene>
         <!--Tasks list-->
         <scene sceneID="oyu-Dp-OwJ">
@@ -353,7 +351,7 @@
                                                     </state>
                                                     <connections>
                                                         <action selector="startFlowButtonClick" destination="rUO-7n-QAB" eventType="touchUpInside" id="hPs-9i-ykr"/>
-                                                        <segue destination="K7y-Ns-niA" kind="modal" modalTransitionStyle="coverVertical" id="xjE-e3-ADt"/>
+                                                        <segue destination="jqu-ez-ehU" kind="push" id="kgv-JR-KoP"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -391,7 +389,7 @@
                     <navigationItem key="navigationItem" title="Tasks list" id="2Ly-kz-ehc">
                         <barButtonItem key="rightBarButtonItem" title="Add" id="nnd-Mr-8IR">
                             <connections>
-                                <segue destination="YL7-om-luX" kind="modal" id="0bW-WK-tre"/>
+                                <segue destination="vNY-uK-amK" kind="push" id="sBd-GN-kWr"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -425,44 +423,6 @@
             </objects>
             <point key="canvasLocation" x="-414" y="867"/>
         </scene>
-        <!--Add timer-->
-        <scene sceneID="n3L-Wo-711">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YL7-om-luX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Add timer" id="ST4-mo-bes"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="kcW-Lo-MS0">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="vNY-uK-amK" kind="relationship" relationship="rootViewController" id="HQc-Ec-IQq"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6f4-Lp-NUp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="458" y="867"/>
-        </scene>
-        <!--Flow-->
-        <scene sceneID="oVM-5Q-cwe">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="K7y-Ns-niA" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Flow" id="vID-Qz-ubj"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Rwj-FJ-1bg">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="jqu-ez-ehU" kind="relationship" relationship="rootViewController" id="qyv-Ja-MJT"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="JoP-vq-UC2" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="22" y="1524"/>
-        </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
@@ -473,6 +433,6 @@
         </simulatedScreenMetrics>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="qyv-Ja-MJT"/>
+        <segue reference="kgv-JR-KoP"/>
     </inferredMetricsTieBreakers>
 </document>
