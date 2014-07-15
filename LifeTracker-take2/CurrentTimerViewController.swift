@@ -120,7 +120,7 @@ class CurrentTimerViewController: UIViewController {
                     
                     let timerSeconds = currentTimer.seconds % 60
                     if timerSeconds != 0 {
-                        txtTotalTimerTime.text = txtTotalTimerTime.text + "\(timerSeconds)"
+                        txtTotalTimerTime.text = txtTotalTimerTime.text + " \(timerSeconds) sec"
                     }
                     
                     txtTotalTimerTime.text = "(\(txtTotalTimerTime.text))"
@@ -202,7 +202,7 @@ class CurrentTimerViewController: UIViewController {
                 txtTime.text = ":)"
                 
                 // Отмечаем как завершённый
-                timersManager.markTimerAsCompleted(currentTimer)
+                timersManager.markTimerAsCompleted(currentTimer, secondsPassed: Int(secondsPassed))
                 
                 // Показываем кнопку "Следующий", если он наличествует
                 if timersManager.hasNextUncompleted() {

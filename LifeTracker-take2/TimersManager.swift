@@ -114,7 +114,7 @@ class TimersManager: NSObject {
         return (context, results)
     }
     
-    func markTimerAsCompleted(timer: Timer) {
+    func markTimerAsCompleted(timer: Timer, secondsPassed: Int) {
         timer.completed = true
         
         let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
@@ -130,6 +130,10 @@ class TimersManager: NSObject {
                 if !fetchedCompleted && (fetchedName == timer.name) && (fetchedDuration == timer.seconds)
                 {
                     fetchedTimer.setValue(true, forKey: "completed")
+                    
+                    // Записываем в таймер реальное пройденное время
+                    fetchedTimer.setValue(secondsPassed, forKey: "seconds")
+                    
                     break fetchLoop
                 }
             }

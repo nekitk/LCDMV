@@ -21,18 +21,24 @@ import UIKit
         }
     }
     
+    // ОТОБРАЖЕНИЕ КЛЕТОК
+    
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         var cell: UITableViewCell!
+        
+        // ФУНКЦИОНАЛЬНЫЕ КЛЕТКИ
         if indexPath.row == timersManager.getTimersCount() {
 
-            // Если есть незавершённые таймеры, показываем кнопку "Старт", а иначе -- "Удалить все"
             if timersManager.hasNextUncompleted() {
+                // КЛЕТКА-КНОПКА СТАРТ, если есть незавершённые таймеры,
                 cell = timersTable.dequeueReusableCellWithIdentifier("StartFlowPrototypeCell", forIndexPath: indexPath) as UITableViewCell
             }
             else {
+                // КЛЕТКА-КНОПКА УДАЛИТЬ ВСЕ, если все таймеры завершены
                 cell = timersTable.dequeueReusableCellWithIdentifier("DeleteAllCompletedPrototypeCell", forIndexPath: indexPath) as UITableViewCell
             }
         }
+        // КЛЕТКИ ТАЙМЕРОВ
         else {
             let timer = timersManager.getTimerByIndex(indexPath.row)
             
@@ -42,19 +48,29 @@ import UIKit
             
             cell.textLabel.text = timer.name
             
-            let secondsWithoutMinutes = timer.seconds % 60
-            let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"
-            cell.detailTextLabel.text = "\(timer.seconds / 60) min\(secondsString)"
-            
-            if timer.isContinuous {
-                cell.detailTextLabel.text = cell.detailTextLabel.text + " (cont.)"
+            if timer.seconds != 0 || timer.isContinuous {
+                let minutes = timer.seconds / 60
+                let minutesString = minutes == 0 ? "" : "\(minutes) min"
+                
+                let secondsWithoutMinutes = timer.seconds % 60
+                let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"
+                
+                cell.detailTextLabel.text = "\(minutesString)\(secondsString)"
+                
+                if timer.isContinuous && !timer.completed {
+                    cell.detailTextLabel.text = cell.detailTextLabel.text + " ..."
+                }
+            }
+            else {
+                cell.detailTextLabel.text = "todo"
             }
         }
         
         return cell
     }
     
-    // Timer deletion
+    // УДАЛЕНИЕ ТАЙМЕРА
+    
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
             timersManager.removeTimer(indexPath.row)
@@ -64,6 +80,7 @@ import UIKit
     
     func tableView(tableView: UITableView!, editingStyleForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCellEditingStyle {
         if indexPath.row >= timersManager.getTimersCount() {
+            // Запрещаем редактирование для дополнительных функциональных клеток (старт и удалить все)
             return UITableViewCellEditingStyle.None
         }
         else {
