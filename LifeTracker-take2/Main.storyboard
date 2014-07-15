@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.7" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="KCL-LJ-hZ3">
     <dependencies>
+        <deployment defaultVersion="1808" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
     </dependencies>
     <scenes>
-        <!--Flow-->
+        <!--Concentrate-->
         <scene sceneID="h3n-dZ-V2B">
             <objects>
                 <viewController id="jqu-ez-ehU" customClass="CurrentTimerViewController" customModule="LCDMV" customModuleProvider="target" sceneMemberID="viewController">
@@ -118,8 +119,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Flow" id="yPd-re-JB0">
-                        <barButtonItem key="leftBarButtonItem" title="Quit" id="RSP-oi-A1w">
+                    <navigationItem key="navigationItem" title="Concentrate" id="yPd-re-JB0">
+                        <barButtonItem key="leftBarButtonItem" title="x" id="RSP-oi-A1w">
                             <connections>
                                 <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimersFromFlowScreen:" id="yyr-Fw-6ls"/>
                             </connections>
@@ -148,7 +149,7 @@
             <objects>
                 <viewController id="vNY-uK-amK" customClass="AddTimerViewController" customModule="LCDMV" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PIb-10-yoa">
-                        <rect key="frame" x="0.0" y="64" width="320" height="480"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" minimumFontSize="17" id="0gU-Xc-jaI">
@@ -281,7 +282,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WtD-b1-qkS" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="oNt-vv-Hqj" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="512" y="867"/>
+            <point key="canvasLocation" x="449" y="867"/>
         </scene>
         <!--Tasks list-->
         <scene sceneID="oyu-Dp-OwJ">
