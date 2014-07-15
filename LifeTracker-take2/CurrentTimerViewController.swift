@@ -299,12 +299,12 @@ class CurrentTimerViewController: UIViewController {
         
         var timeToShow: Int!
         
-        if timerIsContinuous {
-            // Если таймер бесконечный, то показываем, сколько времени прошло с его запуска
+        if timerIsContinuous && isRunningOvertime {
+            // Если таймер бесконечный и превысил свой лимит, то показываем, сколько времени прошло с его запуска
             timeToShow = Int(secondsPassed + secondsPassedSinceLastLaunch)
         }
         else {
-            // Если таймер конечный, то показываем, сколько осталось
+            // В остальных случаях показываем, сколько осталось
             timeToShow = secondsLeft
         }
         
