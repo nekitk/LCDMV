@@ -347,10 +347,8 @@ class CurrentTimerViewController: UIViewController {
     override func viewDidLoad() {
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
-        finishSoundPlayer.prepareToPlay()
         
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
-        startSoundPlayer.prepareToPlay()
         
         changeStateTo(TIMER_NOT_SET)
     }
