@@ -73,7 +73,15 @@ import UIKit
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
             timersManager.removeTimer(indexPath.row)
-            timersTable.reloadData()
+            
+            // Если остались ещё другие таймеры, то сносим только клетку с удаляемым таймером
+            if timersManager.getTimersCount() != 0 {
+                timersTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+            }
+            // Если таймеров не осталось, то сносим обе оставшиеся клетки
+            else {
+                timersTable.deleteRowsAtIndexPaths([indexPath, NSIndexPath(forRow: indexPath.row + 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+            }
         }
     }
     
@@ -93,8 +101,24 @@ import UIKit
             timersTable.reloadData()
         }
         else if segue.sourceViewController is AddTimerViewController {
-            let newRowIndex = NSIndexPath(forRow: timersManager.getTimersCount() - 1, inSection: 0)
-            timersTable.insertRowsAtIndexPaths([newRowIndex], withRowAnimation: UITableViewRowAnimation.Right)
+            
+            // Если таймер был добавлен...
+            if (segue.sourceViewController as AddTimerViewController).timerWasAdded {
+                let timersCount = timersManager.getTimersCount()
+
+                let newRowIndex = NSIndexPath(forRow: timersCount - 1, inSection: 0)
+                let functionalRowIndex = NSIndexPath(forRow: timersCount, inSection: 0)
+                
+                // Если это самый первый таймер, то кнопка должна появиться вместе с ним
+                if timersCount == 1 {
+                    timersTable.insertRowsAtIndexPaths([newRowIndex, functionalRowIndex], withRowAnimation: UITableViewRowAnimation.None)
+                }
+                // Если это уже не первый таймер, то добавляем его строчку, а последнюю обновляем на тот случай, если она должна поменяться с "Удалить все" на "Старт"
+                else {
+                    timersTable.insertRowsAtIndexPaths([newRowIndex], withRowAnimation: UITableViewRowAnimation.Right)
+                    timersTable.reloadRowsAtIndexPaths([functionalRowIndex], withRowAnimation: UITableViewRowAnimation.None)
+                }
+            }
         }
     }
     

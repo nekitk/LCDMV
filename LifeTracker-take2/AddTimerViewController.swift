@@ -7,6 +7,8 @@ class AddTimerViewController: UIViewController {
     @IBOutlet var txtSeconds : UITextField
     @IBOutlet var boxContinuous: UISwitch
     
+    var timerWasAdded: Bool = false
+    
     @IBAction func addButtonClick() {
         let name = txtName.text
         let minutes = txtMinutes.text.toInt()
@@ -19,6 +21,8 @@ class AddTimerViewController: UIViewController {
                 seconds: (seconds ? seconds! : 0),
                 isContinuous: boxContinuous.on
             )
+            
+            timerWasAdded = true
             
             // Clear fields
             txtName.text = ""
