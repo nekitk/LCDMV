@@ -15,6 +15,7 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var nextButton: UIButton
     @IBOutlet var doneButton: UIButton
     @IBOutlet var goBackButton: UIButton
+    @IBOutlet var quitButton: UIBarButtonItem
     
     @IBOutlet var timerControls: UIView
     
@@ -356,6 +357,18 @@ class CurrentTimerViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         if currentTimer {
             changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject) {
+        
+        // Готовимся к возвращению на экран со списком таймеров
+        if sender as NSObject == quitButton {
+            // Если возвращаемся к таймерам из окна Потока, то нужно отменить все оповещения, так как поток при этом останавливается
+            UIApplication.sharedApplication().cancelAllLocalNotifications()
+            
+            // А заодно и таймер обнуляем на всякий случай
+            currentTimer = nil
         }
     }
 }

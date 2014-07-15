@@ -122,7 +122,7 @@
                     <navigationItem key="navigationItem" title="Concentrate" id="yPd-re-JB0">
                         <barButtonItem key="leftBarButtonItem" title="x" id="RSP-oi-A1w">
                             <connections>
-                                <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimersFromFlowScreen:" id="yyr-Fw-6ls"/>
+                                <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimers:" id="AZa-oc-GSR"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -131,6 +131,7 @@
                         <outlet property="goBackButton" destination="TWw-Dd-sCo" id="QLh-Ny-J75"/>
                         <outlet property="nextButton" destination="m7C-b3-WMM" id="jf0-Ga-hij"/>
                         <outlet property="pauseButton" destination="cHS-gy-EMF" id="jBf-pJ-QHd"/>
+                        <outlet property="quitButton" destination="RSP-oi-A1w" id="Kme-Gm-IrN"/>
                         <outlet property="runButton" destination="OFE-aD-ePl" id="nee-oC-R6E"/>
                         <outlet property="stopButton" destination="4km-hL-Ov4" id="kI6-yb-Izy"/>
                         <outlet property="timerControls" destination="qSD-y9-yJS" id="rmw-yn-2yU"/>
@@ -248,7 +249,7 @@
                                 </state>
                                 <connections>
                                     <action selector="addButtonClick" destination="vNY-uK-amK" eventType="touchUpInside" id="fdS-8G-daH"/>
-                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimersFromAddScreen:" id="Q8Z-An-No2"/>
+                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="0gG-Gb-Csg"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Gzv-SX-H7q">
@@ -268,7 +269,7 @@
                     <navigationItem key="navigationItem" title="Add task" id="nbE-wH-1ra">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="YSf-fN-coN">
                             <connections>
-                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimersFromAddScreen:" id="Rlk-Qc-17W"/>
+                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="YJ5-j7-EFq"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
