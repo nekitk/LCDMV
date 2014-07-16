@@ -17,7 +17,6 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var quitButton: UIBarButtonItem
     @IBOutlet var showHideTimeButton: UIButton
     
-    
     @IBOutlet var timerControls: UIView
     
     var finishSoundPlayer: AVAudioPlayer!
@@ -400,4 +399,64 @@ class CurrentTimerViewController: UIViewController {
             currentTimer = nil
         }
     }
+    
+    // Не могу понять, почему этот метод вызывается дважды, ну да ладно.
+    override func encodeRestorableStateWithCoder(coder: NSCoder!) {
+        super.encodeRestorableStateWithCoder(coder)
+        
+        coder.encodeInt64(Int64(timerState!), forKey: "timerState")
+        coder.encodeBool(isRunningOvertime, forKey: "isRunningOvertime")
+        coder.encodeInt64(Int64(firstLaunchMoment.timeIntervalSince1970), forKey: "firstLaunchMoment")
+        if lastLaunchMoment {
+            coder.encodeInt64(Int64(lastLaunchMoment.timeIntervalSince1970), forKey: "lastLaunchMoment")
+        }
+        coder.encodeInt64(Int64(secondsPassed), forKey: "secondsPassed")
+    }
+    
+    override func decodeRestorableStateWithCoder(coder: NSCoder!) {
+        super.decodeRestorableStateWithCoder(coder)
+        
+        let restoredState = Int(coder.decodeIntForKey("timerState"))
+        
+        if currentTimer{
+            if restoredState == RUNNING || restoredState == PAUSED {
+                timerState = restoredState
+                isRunningOvertime = coder.decodeBoolForKey("isRunningOvertime")
+                firstLaunchMoment = NSDate(timeIntervalSince1970: NSTimeInterval(coder.decodeInt64ForKey("firstLaunchMoment")))
+                lastLaunchMoment = NSDate(timeIntervalSince1970: NSTimeInterval(coder.decodeInt64ForKey("lastLaunchMoment")))
+                secondsPassed = NSTimeInterval(coder.decodeInt64ForKey("secondsPassed"))
+                
+                // Восстанавливаем интерфейс
+                txtTime.enabled = true
+                txtTime.hidden = false
+                showHideTimeButton.hidden = false
+                timerControls.hidden = false
+                doneButton.hidden = true
+                
+                // Восстанавливаем инфу о таймере
+                totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
+                timerIsContinuous = currentTimer.isContinuous
+                timerName = currentTimer.name
+                txtName.text = currentTimer.name
+                updateTimeLabel(Int(totalSecondsToGo) - Int(secondsPassed))
+                
+                if restoredState == RUNNING {
+                    enableTheseButtons(pauseButtonEnabled: true, stopButtonEnabled: true)
+                    
+                    // Начинаем тикать
+                    refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
+                }
+                else if restoredState == PAUSED {
+                    enableTheseButtons(runButtonEnabled: true, stopButtonEnabled: true)
+                }
+            }
+            else {
+                performSegueWithIdentifier("unwindToTimers", sender: nil)
+            }
+        }
+        else {
+            performSegueWithIdentifier("unwindToTimers", sender: nil)
+        }
+    }
+
 }
