@@ -2,6 +2,7 @@ import UIKit
 import AVFoundation
 
 var currentTimer: Timer!
+var currentTimerIndex: Int!
 
 class CurrentTimerViewController: UIViewController {
     
@@ -402,23 +403,30 @@ class CurrentTimerViewController: UIViewController {
     
     // Не могу понять, почему этот метод вызывается дважды, ну да ладно.
     override func encodeRestorableStateWithCoder(coder: NSCoder!) {
+        
         super.encodeRestorableStateWithCoder(coder)
         
-        coder.encodeInt64(Int64(timerState!), forKey: "timerState")
-        coder.encodeBool(isRunningOvertime, forKey: "isRunningOvertime")
-        coder.encodeInt64(Int64(firstLaunchMoment.timeIntervalSince1970), forKey: "firstLaunchMoment")
-        if lastLaunchMoment {
-            coder.encodeInt64(Int64(lastLaunchMoment.timeIntervalSince1970), forKey: "lastLaunchMoment")
+        if timerState == RUNNING || timerState == PAUSED {
+            coder.encodeInt64(Int64(timerState!), forKey: "timerState")
+            coder.encodeInt64(Int64(currentTimerIndex), forKey: "currentTimerIndex")
+            coder.encodeBool(isRunningOvertime, forKey: "isRunningOvertime")
+            coder.encodeInt64(Int64(firstLaunchMoment.timeIntervalSince1970), forKey: "firstLaunchMoment")
+            if lastLaunchMoment {
+                coder.encodeInt64(Int64(lastLaunchMoment.timeIntervalSince1970), forKey: "lastLaunchMoment")
+            }
+            coder.encodeInt64(Int64(secondsPassed), forKey: "secondsPassed")
         }
-        coder.encodeInt64(Int64(secondsPassed), forKey: "secondsPassed")
     }
     
     override func decodeRestorableStateWithCoder(coder: NSCoder!) {
         super.decodeRestorableStateWithCoder(coder)
         
-        let restoredState = Int(coder.decodeIntForKey("timerState"))
+        currentTimerIndex = Int(coder.decodeInt64ForKey("currentTimerIndex"))
+        currentTimer = timersManager.getTimerByIndex(currentTimerIndex)
         
         if currentTimer{
+            let restoredState = Int(coder.decodeIntForKey("timerState"))
+            
             if restoredState == RUNNING || restoredState == PAUSED {
                 timerState = restoredState
                 isRunningOvertime = coder.decodeBoolForKey("isRunningOvertime")
