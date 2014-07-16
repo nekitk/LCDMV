@@ -175,9 +175,6 @@ class CurrentTimerViewController: UIViewController {
                 
                 // Начинаем тикать
                 refreshTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTime", userInfo: nil, repeats: true)
-                
-                // Prevent phone locking
-                UIApplication.sharedApplication().idleTimerDisabled = true
             }
             else {
                 doChangeState = false
@@ -221,9 +218,6 @@ class CurrentTimerViewController: UIViewController {
                 
                 // Прячем, чтобы была видно только рожица
                 txtTotalTimerTime.hidden = true
-                
-                // Enable phone locking again
-                UIApplication.sharedApplication().idleTimerDisabled = false
                 
                 // Flooring seconds to compare with total time to go
                 secondsPassed = floor(secondsPassed)
@@ -371,6 +365,10 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        
+        // Запрещаем телефону лочиться, когда открыто окно с потоком
+        UIApplication.sharedApplication().idleTimerDisabled = true
+        
         if currentTimer {
             changeStateTo(TIMER_SET_BUT_NOT_STARTED)
         }
@@ -378,7 +376,7 @@ class CurrentTimerViewController: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject) {
         
-        // В любом случае разрешаем экрану лочиться
+        // Разрешаем телефону лочиться, когда переходим на другое окно
         UIApplication.sharedApplication().idleTimerDisabled = false
         
         // Готовимся к возвращению на экран со списком таймеров
