@@ -362,9 +362,14 @@ class CurrentTimerViewController: UIViewController {
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
         
         changeStateTo(TIMER_NOT_SET)
+        
+        // Переходим к следующему таймеру во время загрузки
+        timersManager.moveToNextTimer()
     }
     
     override func viewWillAppear(animated: Bool) {
+        
+        startFlowRightNow = false
         
         // Запрещаем телефону лочиться, когда открыто окно с потоком
         UIApplication.sharedApplication().idleTimerDisabled = true

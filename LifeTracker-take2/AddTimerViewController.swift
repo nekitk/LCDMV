@@ -1,5 +1,8 @@
 import UIKit
 
+// Глобальная переменная, чтобы не заморачиваться
+var startFlowRightNow: Bool = false
+
 class AddTimerViewController: UIViewController {
 
     @IBOutlet var txtName : UITextField
@@ -8,6 +11,11 @@ class AddTimerViewController: UIViewController {
     @IBOutlet var boxContinuous: UISwitch
     
     var timerWasAdded: Bool = false
+    
+    @IBAction func addAndStartButtonClick() {
+        startFlowRightNow = true
+        addButtonClick()
+    }
     
     @IBAction func addButtonClick() {
         let name = txtName.text

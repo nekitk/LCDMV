@@ -118,7 +118,14 @@ import UIKit
                     timersTable.insertRowsAtIndexPaths([newRowIndex], withRowAnimation: UITableViewRowAnimation.Right)
                     timersTable.reloadRowsAtIndexPaths([functionalRowIndex], withRowAnimation: UITableViewRowAnimation.None)
                 }
+                
             }
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if startFlowRightNow {
+            performSegueWithIdentifier("pushToFlowScreen", sender: nil)
         }
     }
     
@@ -126,10 +133,6 @@ import UIKit
     @IBAction func deleteAllCompletedTimers(sender: AnyObject) {
         timersManager.deleteAllCompleted()
         timersTable.reloadData()
-    }
-    
-    @IBAction func startFlowButtonClick() {
-        timersManager.moveToNextTimer()
     }
     
 }
