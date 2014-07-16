@@ -7,7 +7,6 @@ class CurrentTimerViewController: UIViewController {
     
     @IBOutlet var txtName: UILabel
     @IBOutlet var txtTime: UILabel
-    @IBOutlet var txtTotalTimerTime: UILabel
     
     @IBOutlet var runButton: UIButton
     @IBOutlet var pauseButton: UIButton
@@ -16,6 +15,8 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var doneButton: UIButton
     @IBOutlet var goBackButton: UIButton
     @IBOutlet var quitButton: UIBarButtonItem
+    @IBOutlet var showHideTimeButton: UIButton
+    
     
     @IBOutlet var timerControls: UIView
     
@@ -66,6 +67,10 @@ class CurrentTimerViewController: UIViewController {
         timersManager.moveToNextTimer()
     }
     
+    @IBAction func showHideButtonClick() {
+        txtTime.hidden = !txtTime.hidden
+    }
+    
     func changeStateTo(newState: Int) {
         var doChangeState = true
         
@@ -108,21 +113,22 @@ class CurrentTimerViewController: UIViewController {
             if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
                 enableTheseButtons(runButtonEnabled: true)
                 txtTime.enabled = true
-                
-                if currentTimer.seconds != 0 {
-                    txtTotalTimerTime.hidden = false
-                    txtTotalTimerTime.text = "\(currentTimer.seconds / 60) min"
-                    
-                    let timerSeconds = currentTimer.seconds % 60
-                    if timerSeconds != 0 {
-                        txtTotalTimerTime.text = txtTotalTimerTime.text + " \(timerSeconds) sec"
-                    }
-                    
-                    txtTotalTimerTime.text = "(\(txtTotalTimerTime.text))"
-                }
-                else {
-                    txtTotalTimerTime.hidden = true
-                }
+
+                // Тут было отображение полного времени таймера
+//                if currentTimer.seconds != 0 {
+//                    txtTotalTimerTime.hidden = false
+//                    txtTotalTimerTime.text = "\(currentTimer.seconds / 60) min"
+//                    
+//                    let timerSeconds = currentTimer.seconds % 60
+//                    if timerSeconds != 0 {
+//                        txtTotalTimerTime.text = txtTotalTimerTime.text + " \(timerSeconds) sec"
+//                    }
+//                    
+//                    txtTotalTimerTime.text = "(\(txtTotalTimerTime.text))"
+//                }
+//                else {
+//                    txtTotalTimerTime.hidden = true
+//                }
                 
                 // Копируем все данные таймера.
                 // В таком случае нам не страшно удаление или изменение
@@ -137,6 +143,7 @@ class CurrentTimerViewController: UIViewController {
                 // Если время = 0 и конечный, то это туду-задача
                 if currentTimer.seconds == 0 && !currentTimer.isContinuous {
                     txtTime.hidden = true
+                    showHideTimeButton.hidden = true
                     timerControls.hidden = true
                     
                     doneButton.hidden = false
@@ -144,6 +151,7 @@ class CurrentTimerViewController: UIViewController {
                 // А иначе это таймер
                 else {
                     txtTime.hidden = false
+                    showHideTimeButton.hidden = false
                     timerControls.hidden = false
                     
                     doneButton.hidden = true
@@ -191,7 +199,9 @@ class CurrentTimerViewController: UIViewController {
         case FINISHED:
             if timerState == RUNNING || timerState == PAUSED {
                 
+                txtTime.hidden = false
                 txtTime.text = ":)"
+                showHideTimeButton.hidden = true
                 
                 var secondsToTrack: Int!
                 
@@ -215,9 +225,6 @@ class CurrentTimerViewController: UIViewController {
                 else {
                     enableTheseButtons(goBackButtonEnabled: true)
                 }
-                
-                // Прячем, чтобы была видно только рожица
-                txtTotalTimerTime.hidden = true
                 
                 // Flooring seconds to compare with total time to go
                 secondsPassed = floor(secondsPassed)
