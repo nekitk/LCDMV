@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.7" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="KCL-LJ-hZ3">
     <dependencies>
-        <deployment defaultVersion="1808" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
     </dependencies>
     <scenes>
@@ -249,7 +248,6 @@
                                 </state>
                                 <connections>
                                     <action selector="addButtonClick" destination="vNY-uK-amK" eventType="touchUpInside" id="fdS-8G-daH"/>
-                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="0gG-Gb-Csg"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Gzv-SX-H7q">
@@ -272,7 +270,6 @@
                                 </state>
                                 <connections>
                                     <action selector="addAndStartButtonClick" destination="vNY-uK-amK" eventType="touchUpInside" id="NVQ-y1-nBC"/>
-                                    <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="Age-nm-Llm"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -281,7 +278,7 @@
                     <navigationItem key="navigationItem" title="Add task" id="nbE-wH-1ra">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="YSf-fN-coN">
                             <connections>
-                                <segue destination="oNt-vv-Hqj" kind="unwind" unwindAction="unwindToTimers:" id="YJ5-j7-EFq"/>
+                                <segue destination="oNt-vv-Hqj" kind="unwind" identifier="unwindToTimersSegue" unwindAction="unwindToTimers:" id="YJ5-j7-EFq"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

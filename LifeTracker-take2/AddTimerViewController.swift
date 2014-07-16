@@ -11,9 +11,10 @@ class AddTimerViewController: UIViewController {
     @IBOutlet var boxContinuous: UISwitch
     
     var timerWasAdded: Bool = false
+    var startFlowAfterAdding: Bool = false
     
     @IBAction func addAndStartButtonClick() {
-        startFlowRightNow = true
+        startFlowAfterAdding = true
         addButtonClick()
     }
     
@@ -39,7 +40,11 @@ class AddTimerViewController: UIViewController {
             boxContinuous.on = false
             self.view.endEditing(true)
             
-            //todo move back only if timer is added
+            if startFlowAfterAdding {
+                startFlowRightNow = true
+            }
+            
+            performSegueWithIdentifier("unwindToTimersSegue", sender: nil)
         }
     }
     
