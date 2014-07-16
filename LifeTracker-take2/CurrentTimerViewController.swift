@@ -196,8 +196,20 @@ class CurrentTimerViewController: UIViewController {
                 
                 txtTime.text = ":)"
                 
-                // Отмечаем как завершённый
-                timersManager.markTimerAsCompleted(currentTimer, secondsPassed: Int(secondsPassed))
+                var secondsToTrack: Int!
+                
+                // Если таймер бесконечный, то трэкаем полное время, сколько набежало.
+                // Если таймер завершили раньше положенного, то тоже трэкаем сколько набежало.
+                if currentTimer.isContinuous || secondsPassed < totalSecondsToGo {
+                    secondsToTrack = Int(secondsPassed)
+                }
+                // А если это обычный таймер, который вовремя закончился, то трэкаем его полное время. Потому что набежавшее время может быть завышенным после анлока телефона.
+                //todo Пожалуй, стоит заморочиться и правильно сохранять secondsPassed в таких случаях, чтобы потом не городить кучу вот таких проверок.
+                else {
+                    secondsToTrack = Int(totalSecondsToGo)
+                }
+                
+                timersManager.markTimerAsCompleted(currentTimer, secondsPassed: secondsToTrack)
                 
                 // Показываем кнопку "Следующий", если он наличествует
                 if timersManager.hasNextUncompleted() {
