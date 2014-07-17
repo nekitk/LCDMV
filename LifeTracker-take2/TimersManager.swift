@@ -144,22 +144,21 @@ class TimersManager: NSObject {
         }
     }
     
-    func deleteAllCompleted() {
-        let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
+    func getUncompletedTimersCount() -> Int {
+        var uncompletedTimersCount = 0
         
-        //Fetching results
+        let fetchedTimers = retrieveAllTimersFromCoreData().results
+        
         if !fetchedTimers.isEmpty {
             for fetchedTimer in fetchedTimers {
                 let fetchedTimerCompleted = fetchedTimer.valueForKey("completed") as Bool
-                if fetchedTimerCompleted {
-                    context.deleteObject(fetchedTimer)
+                if !fetchedTimerCompleted {
+                    ++uncompletedTimersCount
                 }
             }
-            
-            context.save(nil)
-            
-            loadTimersFromCoreData()
         }
+        
+        return uncompletedTimersCount
     }
     
 }

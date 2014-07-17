@@ -10,15 +10,15 @@ import UIKit
         timersTable.reloadData()
     }
     
-    // UITableViewDataSource implementation
-    
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
         let timersCount = timersManager.getTimersCount()
-        if timersCount == 0 {
-            return 0
+        
+        // Если есть незавершённые таймеры, то показываем кнопку "Начать"
+        if timersManager.hasNextUncompleted() {
+            return timersCount + 1
         }
         else {
-            return timersManager.getTimersCount() + 1
+            return timersCount
         }
     }
     
@@ -27,17 +27,9 @@ import UIKit
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         var cell: UITableViewCell!
         
-        // ФУНКЦИОНАЛЬНЫЕ КЛЕТКИ
+        // КЛЕТКА-КНОПКА СТАРТ
         if indexPath.row == timersManager.getTimersCount() {
-
-            if timersManager.hasNextUncompleted() {
-                // КЛЕТКА-КНОПКА СТАРТ, если есть незавершённые таймеры,
-                cell = timersTable.dequeueReusableCellWithIdentifier("StartFlowPrototypeCell", forIndexPath: indexPath) as UITableViewCell
-            }
-            else {
-                // КЛЕТКА-КНОПКА УДАЛИТЬ ВСЕ, если все таймеры завершены
-                cell = timersTable.dequeueReusableCellWithIdentifier("DeleteAllCompletedPrototypeCell", forIndexPath: indexPath) as UITableViewCell
-            }
+            cell = timersTable.dequeueReusableCellWithIdentifier("StartFlowPrototypeCell", forIndexPath: indexPath) as UITableViewCell
         }
         // КЛЕТКИ ТАЙМЕРОВ
         else {
@@ -54,7 +46,14 @@ import UIKit
                 let minutesString = minutes == 0 ? "" : "\(minutes) min"
                 
                 let secondsWithoutMinutes = timer.seconds % 60
-                let secondsString = secondsWithoutMinutes == 0 ? "" : " \(secondsWithoutMinutes) sec"
+                var secondsString = ""
+                
+                // Показываем секунды только если:
+                // 1. Таймер не завершён (для завершённых таймеров -- только минуты)
+                // 2. Количество секунд не равно 0
+                if !timer.completed && secondsWithoutMinutes != 0 {
+                    secondsString = " \(secondsWithoutMinutes) sec"
+                }
                 
                 cell.detailTextLabel.text = "\(minutesString)\(secondsString)"
                 
@@ -74,18 +73,24 @@ import UIKit
     
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
+            let uncompletedTimersBefore = timersManager.getUncompletedTimersCount()
+            
             timersManager.removeTimer(indexPath.row)
             
-            // Если остались ещё другие таймеры, то сносим только клетку с удаляемым таймером
-            if timersManager.getTimersCount() != 0 {
-                timersTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
-            }
-            // Если таймеров не осталось, то сносим обе оставшиеся клетки
-            else {
+            let uncompletedTimersAfter = timersManager.getUncompletedTimersCount()
+            
+            // Если удалили последний незавершённый таймер (раньше были, а теперь 0), то сносим обе клетки
+            if uncompletedTimersAfter == 0 && uncompletedTimersBefore != 0 {
                 timersTable.deleteRowsAtIndexPaths([indexPath, NSIndexPath(forRow: indexPath.row + 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
+            else {
+                timersTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+            }
+            
         }
     }
+    
+    // СТИЛИ РЕДАКТИРОВАНИЯ
     
     func tableView(tableView: UITableView!, editingStyleForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCellEditingStyle {
         if indexPath.row >= timersManager.getTimersCount() {
@@ -109,18 +114,15 @@ import UIKit
                 let timersCount = timersManager.getTimersCount()
 
                 let newRowIndex = NSIndexPath(forRow: timersCount - 1, inSection: 0)
-                let functionalRowIndex = NSIndexPath(forRow: timersCount, inSection: 0)
+                let startFlowRowIndex = NSIndexPath(forRow: timersCount, inSection: 0)
                 
-                // Если это самый первый таймер, то кнопка должна появиться вместе с ним
-                if timersCount == 1 {
-                    timersTable.insertRowsAtIndexPaths([newRowIndex, functionalRowIndex], withRowAnimation: UITableViewRowAnimation.None)
+                // Если это первый незавершённый таймер, то вместе с ним должна появиться кнопка "Старт"
+                if timersManager.getUncompletedTimersCount() == 1 {
+                    timersTable.insertRowsAtIndexPaths([newRowIndex, startFlowRowIndex], withRowAnimation: UITableViewRowAnimation.None)
                 }
-                // Если это уже не первый таймер, то добавляем его строчку, а последнюю обновляем на тот случай, если она должна поменяться с "Удалить все" на "Старт"
                 else {
                     timersTable.insertRowsAtIndexPaths([newRowIndex], withRowAnimation: UITableViewRowAnimation.Right)
-                    timersTable.reloadRowsAtIndexPaths([functionalRowIndex], withRowAnimation: UITableViewRowAnimation.None)
                 }
-                
             }
         }
     }
@@ -129,12 +131,6 @@ import UIKit
         if startFlowRightNow {
             performSegueWithIdentifier("pushToFlowScreen", sender: nil)
         }
-    }
-    
-    // Удалить все завершённые таймеры
-    @IBAction func deleteAllCompletedTimers(sender: AnyObject) {
-        timersManager.deleteAllCompleted()
-        timersTable.reloadData()
     }
     
 }

@@ -7,6 +7,7 @@ class CurrentTimerViewController: UIViewController {
     
     @IBOutlet var txtName: UILabel
     @IBOutlet var txtTime: UILabel
+    @IBOutlet var txtAllDone: UILabel
     
     @IBOutlet var runButton: UIButton
     @IBOutlet var pauseButton: UIButton
@@ -14,7 +15,6 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var nextButton: UIButton
     @IBOutlet var doneButton: UIButton
     @IBOutlet var goBackButton: UIButton
-    @IBOutlet var quitButton: UIBarButtonItem
     @IBOutlet var showHideTimeButton: UIButton
     
     @IBOutlet var timerControls: UIView
@@ -102,7 +102,7 @@ class CurrentTimerViewController: UIViewController {
             if !timerState {
                 txtName.text = "Timer not set"
                 txtTime.enabled = false
-                enableTheseButtons()
+                enableTheseButtons(goBackButtonEnabled: true)
             }
         
         case TIMER_SET_BUT_NOT_STARTED:
@@ -110,7 +110,7 @@ class CurrentTimerViewController: UIViewController {
             // Timer set -> Timer set: changing current timer
             // Finished -> Timer set: changing finished timer
             if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
-                enableTheseButtons(runButtonEnabled: true)
+                enableTheseButtons(runButtonEnabled: true, goBackButtonEnabled: true)
                 txtTime.enabled = true
                 
                 // Копируем все данные таймера.
@@ -201,11 +201,15 @@ class CurrentTimerViewController: UIViewController {
                 
                 timersManager.markTimerAsCompleted(currentTimer, secondsPassed: secondsToTrack)
                 
+                // Прячем управление таймером
+                timerControls.hidden = true
+                
                 // Показываем кнопку "Следующий", если он наличествует
                 if timersManager.hasNextUncompleted() {
-                    enableTheseButtons(nextButtonEnabled: true)
+                    enableTheseButtons(nextButtonEnabled: true, goBackButtonEnabled: true)
                 }
                 else {
+                    txtAllDone.hidden = false
                     enableTheseButtons(goBackButtonEnabled: true)
                 }
                 
@@ -376,15 +380,7 @@ class CurrentTimerViewController: UIViewController {
         
         // Разрешаем телефону лочиться, когда переходим на другое окно
         UIApplication.sharedApplication().idleTimerDisabled = false
-        
-        // Готовимся к возвращению на экран со списком таймеров
-        if sender as NSObject == quitButton {
-            // Если возвращаемся к таймерам из окна Потока, то нужно отменить все оповещения, так как поток при этом останавливается
-            UIApplication.sharedApplication().cancelAllLocalNotifications()
-            
-            // А заодно и таймер обнуляем на всякий случай
-            currentTimer = nil
-        }
+
     }
     
     override func encodeRestorableStateWithCoder(coder: NSCoder!) {
@@ -452,11 +448,11 @@ class CurrentTimerViewController: UIViewController {
                 }
             }
             else if restoredState != FINISHED && restoredState != TIMER_SET_BUT_NOT_STARTED {
-                performSegueWithIdentifier("unwindToTimers", sender: nil)
+                performSegueWithIdentifier("unwindToTimersFromFlow", sender: nil)
             }
         }
         else {
-            performSegueWithIdentifier("unwindToTimers", sender: nil)
+            performSegueWithIdentifier("unwindToTimersFromFlow", sender: nil)
         }
     }
 
