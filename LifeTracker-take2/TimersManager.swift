@@ -35,7 +35,6 @@ class TimersManager: NSObject {
         for (index, timer: Timer) in enumerate(timers) {
             if !timer.completed {
                 currentTimer = timer
-                currentTimerIndex = index
                 return
             }
         }

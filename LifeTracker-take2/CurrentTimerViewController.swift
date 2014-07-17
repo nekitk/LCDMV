@@ -2,7 +2,6 @@ import UIKit
 import AVFoundation
 
 var currentTimer: Timer!
-var currentTimerIndex: Int!
 
 class CurrentTimerViewController: UIViewController {
     
@@ -113,22 +112,6 @@ class CurrentTimerViewController: UIViewController {
             if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
                 enableTheseButtons(runButtonEnabled: true)
                 txtTime.enabled = true
-
-                // Тут было отображение полного времени таймера
-//                if currentTimer.seconds != 0 {
-//                    txtTotalTimerTime.hidden = false
-//                    txtTotalTimerTime.text = "\(currentTimer.seconds / 60) min"
-//                    
-//                    let timerSeconds = currentTimer.seconds % 60
-//                    if timerSeconds != 0 {
-//                        txtTotalTimerTime.text = txtTotalTimerTime.text + " \(timerSeconds) sec"
-//                    }
-//                    
-//                    txtTotalTimerTime.text = "(\(txtTotalTimerTime.text))"
-//                }
-//                else {
-//                    txtTotalTimerTime.hidden = true
-//                }
                 
                 // Копируем все данные таймера.
                 // В таком случае нам не страшно удаление или изменение
@@ -363,6 +346,8 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         // Initialize sound players
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
         
@@ -375,6 +360,7 @@ class CurrentTimerViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         startFlowRightNow = false
         
@@ -401,18 +387,19 @@ class CurrentTimerViewController: UIViewController {
         }
     }
     
-    // Не могу понять, почему этот метод вызывается дважды, ну да ладно.
     override func encodeRestorableStateWithCoder(coder: NSCoder!) {
-        
         super.encodeRestorableStateWithCoder(coder)
         
+        coder.encodeInt64(Int64(timerState!), forKey: "timerState")
+        
         if timerState == RUNNING || timerState == PAUSED {
-            coder.encodeInt64(Int64(timerState!), forKey: "timerState")
-            coder.encodeInt64(Int64(currentTimerIndex), forKey: "currentTimerIndex")
             coder.encodeBool(isRunningOvertime, forKey: "isRunningOvertime")
             coder.encodeInt64(Int64(firstLaunchMoment.timeIntervalSince1970), forKey: "firstLaunchMoment")
             if lastLaunchMoment {
                 coder.encodeInt64(Int64(lastLaunchMoment.timeIntervalSince1970), forKey: "lastLaunchMoment")
+            }
+            else {
+                coder.encodeInt64(0, forKey: "lastLaunchMoment")
             }
             coder.encodeInt64(Int64(secondsPassed), forKey: "secondsPassed")
         }
@@ -421,17 +408,22 @@ class CurrentTimerViewController: UIViewController {
     override func decodeRestorableStateWithCoder(coder: NSCoder!) {
         super.decodeRestorableStateWithCoder(coder)
         
-        currentTimerIndex = Int(coder.decodeInt64ForKey("currentTimerIndex"))
-        currentTimer = timersManager.getTimerByIndex(currentTimerIndex)
-        
-        if currentTimer{
+        if currentTimer {
             let restoredState = Int(coder.decodeIntForKey("timerState"))
             
             if restoredState == RUNNING || restoredState == PAUSED {
                 timerState = restoredState
                 isRunningOvertime = coder.decodeBoolForKey("isRunningOvertime")
                 firstLaunchMoment = NSDate(timeIntervalSince1970: NSTimeInterval(coder.decodeInt64ForKey("firstLaunchMoment")))
-                lastLaunchMoment = NSDate(timeIntervalSince1970: NSTimeInterval(coder.decodeInt64ForKey("lastLaunchMoment")))
+                
+                let intervalFoLastLaunchMoment = NSTimeInterval(coder.decodeInt64ForKey("lastLaunchMoment"))
+                if intervalFoLastLaunchMoment > 0 {
+                    lastLaunchMoment = NSDate(timeIntervalSince1970: intervalFoLastLaunchMoment)
+                }
+                else {
+                    lastLaunchMoment = nil
+                }
+                
                 secondsPassed = NSTimeInterval(coder.decodeInt64ForKey("secondsPassed"))
                 
                 // Восстанавливаем интерфейс
@@ -446,7 +438,8 @@ class CurrentTimerViewController: UIViewController {
                 timerIsContinuous = currentTimer.isContinuous
                 timerName = currentTimer.name
                 txtName.text = currentTimer.name
-                updateTimeLabel(Int(totalSecondsToGo) - Int(secondsPassed))
+                
+                updateTimeLabel(Int(abs(totalSecondsToGo - secondsPassed)))
                 
                 if restoredState == RUNNING {
                     enableTheseButtons(pauseButtonEnabled: true, stopButtonEnabled: true)
@@ -458,7 +451,7 @@ class CurrentTimerViewController: UIViewController {
                     enableTheseButtons(runButtonEnabled: true, stopButtonEnabled: true)
                 }
             }
-            else {
+            else if restoredState != FINISHED && restoredState != TIMER_SET_BUT_NOT_STARTED {
                 performSegueWithIdentifier("unwindToTimers", sender: nil)
             }
         }

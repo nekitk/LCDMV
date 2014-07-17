@@ -5,6 +5,8 @@ import UIKit
     @IBOutlet var timersTable : UITableView
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         timersTable.reloadData()
     }
     
