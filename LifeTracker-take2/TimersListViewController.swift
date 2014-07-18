@@ -41,28 +41,38 @@ import UIKit
             
             cell.textLabel.text = timer.name
             
-            if timer.seconds != 0 || timer.isContinuous {
+            // Тудушка
+            if timer.isToDo() && !timer.completed {
+                cell.detailTextLabel.text = "todo"
+            }
+            // Завершённый таймер
+            else if timer.completed {
+                let minutesString = timer.isToDo() ? "todo" : "\(timer.seconds / 60) min"
+                
+                let dateFormatter = NSDateFormatter()
+                dateFormatter.timeStyle = .ShortStyle
+                dateFormatter.dateStyle = .NoStyle
+                
+                let startTimeString = dateFormatter.stringFromDate(timer.startMoment)
+                let endTimeString = dateFormatter.stringFromDate(timer.endMoment)
+                
+                cell.detailTextLabel.text = "\(startTimeString) - \(endTimeString) (\(minutesString))"
+            }
+            // Незавершённый таймер
+            else {
+                
+                // И минуты, и секунды показываем, только если их не 0
                 let minutes = timer.seconds / 60
-                let minutesString = minutes == 0 ? "" : "\(minutes) min"
+                let minutesString = (minutes == 0) ? "" : "\(minutes) min"
                 
                 let secondsWithoutMinutes = timer.seconds % 60
-                var secondsString = ""
-                
-                // Показываем секунды только если:
-                // 1. Таймер не завершён (для завершённых таймеров -- только минуты)
-                // 2. Количество секунд не равно 0
-                if !timer.completed && secondsWithoutMinutes != 0 {
-                    secondsString = " \(secondsWithoutMinutes) sec"
-                }
+                let secondsString = (secondsWithoutMinutes == 0) ? "" : " \(secondsWithoutMinutes) sec"
                 
                 cell.detailTextLabel.text = "\(minutesString)\(secondsString)"
                 
-                if timer.isContinuous && !timer.completed {
+                if timer.isContinuous {
                     cell.detailTextLabel.text = cell.detailTextLabel.text + " ..."
                 }
-            }
-            else {
-                cell.detailTextLabel.text = "todo"
             }
         }
         

@@ -58,7 +58,15 @@ class TimersManager: NSObject {
                 let fetchedIsContinuous = fetchedTimer.valueForKey("isContinuous") as Bool
                 let fetchedCompleted = fetchedTimer.valueForKey("completed") as Bool
                 
-                timers.append(Timer(name: fetchedName, seconds: fetchedSeconds, isContinuous: fetchedIsContinuous, completed: fetchedCompleted))
+                var fetchedStartMoment: NSDate!
+                var fetchedEndMoment: NSDate!
+                
+                if fetchedCompleted {
+                    fetchedStartMoment = fetchedTimer.valueForKey("startMoment") as NSDate
+                    fetchedEndMoment = fetchedTimer.valueForKey("endMoment") as NSDate
+                }
+                
+                timers.append(Timer(name: fetchedName, seconds: fetchedSeconds, isContinuous: fetchedIsContinuous, completed: fetchedCompleted, startMoment: fetchedStartMoment, endMoment: fetchedEndMoment))
             }
         }
     }
@@ -118,7 +126,7 @@ class TimersManager: NSObject {
         return (context, results)
     }
     
-    func markTimerAsCompleted(timer: Timer, secondsPassed: Int) {
+    func markTimerAsCompleted(timer: Timer, secondsPassed: Int, startMoment: NSDate) {
         timer.completed = true
         
         let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
@@ -137,6 +145,9 @@ class TimersManager: NSObject {
                     
                     // Записываем в таймер реальное пройденное время
                     fetchedTimer.setValue(secondsPassed, forKey: "seconds")
+                    
+                    fetchedTimer.setValue(startMoment, forKey: "startMoment")
+                    fetchedTimer.setValue(NSDate(), forKey: "endMoment")
                     
                     break fetchLoop
                 }

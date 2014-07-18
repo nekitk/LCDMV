@@ -43,7 +43,6 @@ class CurrentTimerViewController: UIViewController {
     var timerState: Int?
     
     // Timer states
-    let TIMER_NOT_SET = 0
     let TIMER_SET_BUT_NOT_STARTED = 1
     let RUNNING = 2
     let PAUSED = 3
@@ -97,20 +96,11 @@ class CurrentTimerViewController: UIViewController {
         // Check to state transitions
         switch newState {
         
-        case TIMER_NOT_SET:
-            if !timerState {
-                txtName.text = "Timer not set"
-                txtTime.enabled = false
-                enableTheseButtons(goBackButtonEnabled: true)
-            }
-        
         case TIMER_SET_BUT_NOT_STARTED:
-            // Timer not set -> Timer set: first timer setup
             // Timer set -> Timer set: changing current timer
             // Finished -> Timer set: changing finished timer
-            if timerState == TIMER_NOT_SET || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
+            if !timerState || timerState == TIMER_SET_BUT_NOT_STARTED || timerState == FINISHED {
                 enableTheseButtons(runButtonEnabled: true, goBackButtonEnabled: true)
-                txtTime.enabled = true
                 
                 // Копируем все данные таймера.
                 // В таком случае нам не страшно удаление или изменение
@@ -122,9 +112,7 @@ class CurrentTimerViewController: UIViewController {
                 txtName.text = timerName
                 updateTimeLabel(Int(totalSecondsToGo))
                 
-                // Если время = 0 и конечный, то это туду-задача
-                if totalSecondsToGo == 0 && !timerIsContinuous {
-                    txtTime.hidden = true
+                if currentTimer.isToDo() {
                     showHideTimeButton.hidden = true
                     timerControls.hidden = true
                     
@@ -132,7 +120,6 @@ class CurrentTimerViewController: UIViewController {
                 }
                 // А иначе это таймер
                 else {
-                    txtTime.hidden = false
                     showHideTimeButton.hidden = false
                     timerControls.hidden = false
                     
@@ -181,10 +168,6 @@ class CurrentTimerViewController: UIViewController {
         case FINISHED:
             if timerState == RUNNING || timerState == PAUSED {
                 
-                txtTime.hidden = false
-                txtTime.text = ":)"
-                showHideTimeButton.hidden = true
-                
                 var secondsToTrack: Int!
                 
                 // Если таймер бесконечный, то трэкаем полное время, сколько набежало.
@@ -198,7 +181,14 @@ class CurrentTimerViewController: UIViewController {
                     secondsToTrack = Int(totalSecondsToGo)
                 }
                 
-                timersManager.markTimerAsCompleted(currentTimer, secondsPassed: secondsToTrack)
+                timersManager.markTimerAsCompleted(currentTimer, secondsPassed: secondsToTrack, startMoment: firstLaunchMoment)
+                
+                // Если это был таймер, то показываем итог
+                if !currentTimer.isToDo() {
+                    updateTimeLabel(secondsToTrack)
+                    txtTime.hidden = false
+                    showHideTimeButton.hidden = true
+                }
                 
                 // Прячем управление таймером
                 timerControls.hidden = true
@@ -356,10 +346,13 @@ class CurrentTimerViewController: UIViewController {
         
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
         
-        changeStateTo(TIMER_NOT_SET)
-        
         // Переходим к следующему таймеру во время загрузки
         timersManager.moveToNextTimer()
+        
+        // Если тудушка, то моментом начала считаем время её появления на экране
+        if currentTimer.isToDo() {
+            firstLaunchMoment = NSDate()
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
