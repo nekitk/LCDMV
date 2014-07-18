@@ -1,6 +1,9 @@
 import UIKit
 import CoreData
 
+var currentTimer: Timer!
+var currentTimerIndex: Int!
+
 let timersManager = TimersManager()
 
 class TimersManager: NSObject {
@@ -35,6 +38,7 @@ class TimersManager: NSObject {
         for (index, timer: Timer) in enumerate(timers) {
             if !timer.completed {
                 currentTimer = timer
+                currentTimerIndex = index
                 return
             }
         }
