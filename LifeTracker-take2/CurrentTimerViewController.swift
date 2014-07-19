@@ -5,7 +5,6 @@ class CurrentTimerViewController: UIViewController {
     
     @IBOutlet var txtName: UILabel
     @IBOutlet var txtTime: UILabel
-    @IBOutlet var txtAllDone: UILabel
     @IBOutlet var txtRestorationWarning: UILabel
     
     @IBOutlet var runButton: UIButton
@@ -14,6 +13,7 @@ class CurrentTimerViewController: UIViewController {
     @IBOutlet var nextButton: UIButton
     @IBOutlet var doneButton: UIButton
     @IBOutlet var goBackButton: UIButton
+    @IBOutlet var allTimersCompleteButton: UIButton
     @IBOutlet var showHideTimeButton: UIButton
     
     @IBOutlet var timerControls: UIView
@@ -137,6 +137,8 @@ class CurrentTimerViewController: UIViewController {
                 
                 enableTheseButtons(pauseButtonEnabled: true, stopButtonEnabled: true)
                 
+                view.backgroundColor = UIColor(red: 1, green: 204/255, blue: 102/255, alpha: 1)
+                
                 lastLaunchMoment = NSDate()
 
                 if !firstLaunchMoment {
@@ -198,7 +200,7 @@ class CurrentTimerViewController: UIViewController {
                     enableTheseButtons(nextButtonEnabled: true, goBackButtonEnabled: true)
                 }
                 else {
-                    txtAllDone.hidden = false
+                    allTimersCompleteButton.hidden = false
                     enableTheseButtons(goBackButtonEnabled: true)
                 }
                 
