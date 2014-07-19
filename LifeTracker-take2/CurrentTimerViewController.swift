@@ -429,6 +429,7 @@ class CurrentTimerViewController: UIViewController {
                     showHideTimeButton.hidden = false
                     timerControls.hidden = false
                     doneButton.hidden = true
+                    view.backgroundColor = UIColor(red: 1, green: 204/255, blue: 102/255, alpha: 1)
                     
                     // Восстанавливаем инфу о таймере
                     totalSecondsToGo = NSTimeInterval(currentTimer.seconds)
