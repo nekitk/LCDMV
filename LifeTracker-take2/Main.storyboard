@@ -40,7 +40,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cHS-gy-EMF">
-                                        <rect key="frame" x="108" y="0.0" width="100" height="50"/>
+                                        <rect key="frame" x="110" y="0.0" width="100" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="23"/>
                                         <state key="normal" title="Pause">
@@ -84,19 +84,8 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="42"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8oH-z5-hC8">
-                                <rect key="frame" x="107" y="242" width="107" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Show/hide time">
-                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="showHideButtonClick" destination="jqu-ez-ehU" eventType="touchUpInside" id="LJO-I3-MV5"/>
-                                </connections>
-                            </button>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Restored timer differs!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JU9-o3-U6C">
-                                <rect key="frame" x="75" y="378" width="170" height="21"/>
+                                <rect key="frame" x="75" y="242" width="170" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -112,11 +101,11 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimers:" id="6sg-cg-HsJ"/>
+                                    <segue destination="Mv1-zz-KY1" kind="unwind" identifier="unwindToTimersFromFlow" unwindAction="unwindToTimers:" id="6sg-cg-HsJ"/>
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xrJ-VZ-teV">
-                                <rect key="frame" x="53" y="280" width="214" height="71"/>
+                                <rect key="frame" x="53" y="317" width="214" height="71"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" none="YES"/>
@@ -125,26 +114,31 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8oH-z5-hC8">
+                                <rect key="frame" x="107" y="383" width="107" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Show/hide time">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="showHideButtonClick" destination="jqu-ez-ehU" eventType="touchUpInside" id="LJO-I3-MV5"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="yPd-re-JB0">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="UOh-ng-eOi">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="DO1-dh-ckD">
-                                <rect key="frame" x="20" y="107" width="35" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
-                                <state key="normal" title="Back"/>
-                                <connections>
-                                    <segue destination="Mv1-zz-KY1" kind="unwind" identifier="unwindToTimersFromFlow" unwindAction="unwindToTimers:" id="aTe-7B-mBD"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="2fG-e8-MFA">
+                            <connections>
+                                <segue destination="Mv1-zz-KY1" kind="unwind" unwindAction="unwindToTimers:" id="BV5-cK-bBm"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="allTimersCompleteButton" destination="Ieh-5d-Nev" id="XO9-0l-I9K"/>
                         <outlet property="doneButton" destination="Vjx-sd-6Oz" id="3BG-Zp-avV"/>
-                        <outlet property="goBackButton" destination="DO1-dh-ckD" id="mF3-YC-yKU"/>
+                        <outlet property="goBackBarButton" destination="2fG-e8-MFA" id="XYo-iE-U8s"/>
                         <outlet property="nextButton" destination="m7C-b3-WMM" id="jf0-Ga-hij"/>
                         <outlet property="pauseButton" destination="cHS-gy-EMF" id="jBf-pJ-QHd"/>
                         <outlet property="runButton" destination="OFE-aD-ePl" id="nee-oC-R6E"/>

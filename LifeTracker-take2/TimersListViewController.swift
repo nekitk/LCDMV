@@ -139,6 +139,7 @@ import UIKit
     override func viewDidAppear(animated: Bool) {
         if startFlowRightNow {
             performSegueWithIdentifier("pushToFlowScreen", sender: nil)
+            startFlowRightNow = false
         }
         else {
             // Пролистываем в самый низ
