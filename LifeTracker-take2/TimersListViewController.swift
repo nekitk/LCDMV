@@ -96,7 +96,6 @@ import UIKit
             else {
                 timersTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
             }
-            
         }
     }
     
@@ -123,15 +122,15 @@ import UIKit
             if (segue.sourceViewController as AddTimerViewController).timerWasAdded {
                 let timersCount = timersManager.getTimersCount()
 
-                let newRowIndex = NSIndexPath(forRow: timersCount - 1, inSection: 0)
-                let startFlowRowIndex = NSIndexPath(forRow: timersCount, inSection: 0)
+                let newRowIndexPath = NSIndexPath(forRow: timersCount - 1, inSection: 0)
+                let startFlowRowIndexPath = NSIndexPath(forRow: timersCount, inSection: 0)
                 
                 // Если это первый незавершённый таймер, то вместе с ним должна появиться кнопка "Старт"
                 if timersManager.getUncompletedTimersCount() == 1 {
-                    timersTable.insertRowsAtIndexPaths([newRowIndex, startFlowRowIndex], withRowAnimation: UITableViewRowAnimation.None)
+                    timersTable.insertRowsAtIndexPaths([newRowIndexPath, startFlowRowIndexPath], withRowAnimation: UITableViewRowAnimation.None)
                 }
                 else {
-                    timersTable.insertRowsAtIndexPaths([newRowIndex], withRowAnimation: UITableViewRowAnimation.Right)
+                    timersTable.insertRowsAtIndexPaths([newRowIndexPath], withRowAnimation: UITableViewRowAnimation.Right)
                 }
             }
         }
@@ -140,6 +139,10 @@ import UIKit
     override func viewDidAppear(animated: Bool) {
         if startFlowRightNow {
             performSegueWithIdentifier("pushToFlowScreen", sender: nil)
+        }
+        else {
+            // Пролистываем в самый низ
+            timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersManager.getTimersCount() - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
         }
     }
     
