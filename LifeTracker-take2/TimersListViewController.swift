@@ -142,8 +142,10 @@ import UIKit
             startFlowRightNow = false
         }
         else {
-            // Пролистываем в самый низ
-            timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersManager.getTimersCount() - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+            if timersManager.getTimersCount() > 0 {
+                // Пролистываем в самый низ
+                timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersManager.getTimersCount() - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+            }
         }
     }
     
