@@ -126,6 +126,8 @@ class TimersManager: NSObject {
         return (context, results)
     }
     
+    
+    // Отмечаем как выполненный и _УДАЛЯЕМ_!
     func markTimerAsCompleted(timer: Timer, secondsPassed: Int, startMoment: NSDate) {
         timer.completed = true
         
@@ -149,6 +151,10 @@ class TimersManager: NSObject {
                     fetchedTimer.setValue(startMoment, forKey: "startMoment")
                     fetchedTimer.setValue(NSDate(), forKey: "endMoment")
                     
+                    // ВНИМАНИЕ! УДАЛЯЕМ ТАЙМЕР!
+                    //TODO Когда определюсь, либо сделать нормальное удаление, либо вернуть, как было
+                    context.deleteObject(fetchedTimer)
+                    
                     break fetchLoop
                 }
             }
@@ -158,6 +164,7 @@ class TimersManager: NSObject {
             loadTimersFromCoreData()
         }
     }
+    
     
     func getUncompletedTimersCount() -> Int {
         var uncompletedTimersCount = 0
