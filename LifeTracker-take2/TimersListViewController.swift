@@ -1,6 +1,6 @@
 import UIKit
 
-@objc(TimersListViewController) class TimersListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class TimersListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var timersTable : UITableView!
     
