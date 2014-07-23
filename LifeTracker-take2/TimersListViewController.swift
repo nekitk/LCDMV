@@ -2,7 +2,7 @@ import UIKit
 
 @objc(TimersListViewController) class TimersListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @IBOutlet var timersTable : UITableView
+    @IBOutlet var timersTable : UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()

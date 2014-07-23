@@ -5,10 +5,10 @@ var startFlowRightNow: Bool = false
 
 class AddTimerViewController: UIViewController {
 
-    @IBOutlet var txtName : UITextField
-    @IBOutlet var txtMinutes : UITextField
-    @IBOutlet var txtSeconds : UITextField
-    @IBOutlet var boxContinuous: UISwitch
+    @IBOutlet var txtName : UITextField!
+    @IBOutlet var txtMinutes : UITextField!
+    @IBOutlet var txtSeconds : UITextField!
+    @IBOutlet var boxContinuous: UISwitch!
     
     var timerWasAdded: Bool = false
     var startFlowAfterAdding: Bool = false

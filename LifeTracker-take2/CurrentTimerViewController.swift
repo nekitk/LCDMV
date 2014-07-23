@@ -7,9 +7,9 @@ class CurrentTimerViewController: UIViewController {
             ТЕКСТОВЫЕ ПОЛЯ
     */
     
-    @IBOutlet var txtName: UILabel
-    @IBOutlet var txtTime: UILabel
-    @IBOutlet var txtRestorationWarning: UILabel
+    @IBOutlet var txtName: UILabel!
+    @IBOutlet var txtTime: UILabel!
+    @IBOutlet var txtRestorationWarning: UILabel!
     
     
     
@@ -17,19 +17,19 @@ class CurrentTimerViewController: UIViewController {
             КНОПКИ
     */
     
-    @IBOutlet var timerControls: UIView
-    @IBOutlet var runButton: UIButton
-    @IBOutlet var pauseButton: UIButton
-    @IBOutlet var stopButton: UIButton
+    @IBOutlet var timerControls: UIView!
+    @IBOutlet var runButton: UIButton!
+    @IBOutlet var pauseButton: UIButton!
+    @IBOutlet var stopButton: UIButton!
     
-    @IBOutlet var doneButton: UIButton
+    @IBOutlet var doneButton: UIButton!
     
-    @IBOutlet var nextButton: UIButton
-    @IBOutlet var allTimersCompleteButton: UIButton
+    @IBOutlet var nextButton: UIButton!
+    @IBOutlet var allTimersCompleteButton: UIButton!
     
-    @IBOutlet var goBackBarButton: UIBarButtonItem
+    @IBOutlet var goBackBarButton: UIBarButtonItem!
     
-    @IBOutlet var showHideTimeButton: UIButton
+    @IBOutlet var showHideTimeButton: UIButton!
     
     
     
