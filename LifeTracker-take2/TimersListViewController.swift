@@ -4,6 +4,10 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
 
     @IBOutlet var timersTable : UITableView!
     
+    var timersCount: Int {
+        return timersManager.timersCount
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -16,8 +20,6 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     // КОЛИЧЕСТВО КЛЕТОК
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        let timersCount = timersManager.getTimersCount()
-        
         // Если есть незавершённые таймеры, то показываем кнопку "Начать"
         if timersManager.hasNextUncompleted() {
             return timersCount + 1
@@ -34,7 +36,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         var cell: UITableViewCell!
         
         // КЛЕТКА-КНОПКА СТАРТ
-        if indexPath.row == timersManager.getTimersCount() {
+        if indexPath.row == timersCount {
             cell = timersTable.dequeueReusableCellWithIdentifier("StartFlowPrototypeCell", forIndexPath: indexPath) as UITableViewCell
         }
         // КЛЕТКИ ТАЙМЕРОВ
@@ -97,6 +99,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             let uncompletedTimersAfter = timersManager.getUncompletedTimersCount()
             
             // Если удалили последний незавершённый таймер (раньше были, а теперь 0), то сносим обе клетки
+            //todo можно заменить на hasNextUncompleted
             if uncompletedTimersAfter == 0 && uncompletedTimersBefore != 0 {
                 timersTable.deleteRowsAtIndexPaths([indexPath, NSIndexPath(forRow: indexPath.row + 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
@@ -110,7 +113,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     // СТИЛИ РЕДАКТИРОВАНИЯ
     
     func tableView(tableView: UITableView!, editingStyleForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCellEditingStyle {
-        if indexPath.row >= timersManager.getTimersCount() {
+        if indexPath.row >= timersCount {
             // Запрещаем редактирование для дополнительных функциональных клеток (старт и удалить все)
             return UITableViewCellEditingStyle.None
         }
@@ -122,7 +125,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     
     // Запрещаем редактировать последнюю клетку
     func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
-        return indexPath.row < timersManager.getTimersCount()
+        return indexPath.row < timersCount
     }
     
     
@@ -130,11 +133,17 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(tableView: UITableView!, moveRowAtIndexPath sourceIndexPath: NSIndexPath!, toIndexPath destinationIndexPath: NSIndexPath!) {
         timersManager.moveTimer(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
-        timersTable.reloadData()
     }
     
+    func tableView(tableView: UITableView!, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath!, var toProposedIndexPath proposedDestinationIndexPath: NSIndexPath!) -> NSIndexPath! {
+        if proposedDestinationIndexPath.row == timersCount {
+            proposedDestinationIndexPath = NSIndexPath(forRow: timersCount - 1, inSection: proposedDestinationIndexPath.section)
+        }
+        
+        return proposedDestinationIndexPath
+    }
     
-    // Back transition from adding timer screen
+    // ДОБАВЛЯЕМ ТАЙМЕР (во время возвращения с экрана добавления таймера)
     @IBAction func unwindToTimers(segue: UIStoryboardSegue) {
         if segue.sourceViewController is CurrentTimerViewController {
             timersTable.reloadData()
@@ -143,8 +152,6 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             
             // Если таймер был добавлен...
             if (segue.sourceViewController as AddTimerViewController).timerWasAdded {
-                let timersCount = timersManager.getTimersCount()
-
                 let newRowIndexPath = NSIndexPath(forRow: timersCount - 1, inSection: 0)
                 let startFlowRowIndexPath = NSIndexPath(forRow: timersCount, inSection: 0)
                 
@@ -165,9 +172,9 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             startFlowRightNow = false
         }
         else {
-            if timersManager.getTimersCount() > 0 {
+            if timersCount > 0 {
                 // Пролистываем в самый низ
-                timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersManager.getTimersCount() - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+                timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersCount - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
             }
         }
     }

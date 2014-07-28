@@ -451,7 +451,7 @@ class CurrentTimerViewController: UIViewController {
         super.encodeRestorableStateWithCoder(coder)
         
         coder.encodeInt64(Int64(timerState!), forKey: "timerState")
-        coder.encodeInt64(Int64(currentTimerIndex), forKey: "currentTimerIndex")
+        coder.encodeInt64(Int64(timersManager.currentTimerIndex), forKey: "currentTimerIndex")
         
         if timerState == RUNNING || timerState == PAUSED {
             coder.encodeBool(isRunningOvertime, forKey: "isRunningOvertime")
@@ -475,7 +475,7 @@ class CurrentTimerViewController: UIViewController {
             let restoredIndex = Int(coder.decodeInt64ForKey("currentTimerIndex"))
             
             // Восстанавливаем только в том случае, если текущий таймер и сохранённый -- это один и тот же.
-            if restoredIndex == currentTimerIndex {
+            if restoredIndex == timersManager.currentTimerIndex {
             
                 let restoredState = Int(coder.decodeInt64ForKey("timerState"))
                 

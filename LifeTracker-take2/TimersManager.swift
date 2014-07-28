@@ -2,13 +2,29 @@ import UIKit
 import CoreData
 
 var currentTimer: Timer!
-var currentTimerIndex: Int!
 
 let timersManager = TimersManager()
 
 class TimersManager: NSObject, Printable {
     
-    var timers = [Timer]()
+    private var timers = [Timer]()
+    
+    var context: NSManagedObjectContext {
+        return (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+    }
+    
+    var timersCount: Int {
+        return timers.count
+    }
+    
+    var currentTimerIndex: Int! {
+        if currentTimer {
+            return (timers as NSArray).indexOfObject(currentTimer)
+        }
+        else {
+            return nil
+        }
+    }
     
     override var description: String {
         var stringToPrint = "\n"
@@ -21,15 +37,13 @@ class TimersManager: NSObject, Printable {
     init() {
         super.init()
         
-        loadTimersFromCoreData()
+        let request = NSFetchRequest(entityName: "Timers")
+        request.returnsObjectsAsFaults = false
+        timers = context.executeFetchRequest(request, error: nil) as [Timer]
     }
     
     func getTimerByIndex(index: Int) -> Timer {
         return timers[index]
-    }
-    
-    func getTimersCount() -> Int {
-        return timers.count
     }
     
     func hasNextUncompleted() -> Bool {
@@ -43,153 +57,61 @@ class TimersManager: NSObject, Printable {
     }
     
     func moveToNextTimer() {
-        for (index, timer: Timer) in enumerate(timers) {
+        for timer in timers {
             if !timer.completed {
                 currentTimer = timer
-                currentTimerIndex = index
                 return
             }
         }
+        
+        currentTimer = nil
     }
     
     func moveTimer(fromIndex sourceIndex: Int, toIndex newIndex: Int) {
         let movingTimer: Timer = timers.removeAtIndex(sourceIndex)
         timers.insert(movingTimer, atIndex: newIndex)
+        
+        //todo Сохранять порядок
     }
     
-    func loadTimersFromCoreData() {
-        //Clean up timers list
-        timers = []
+    func addTimer(name: String, minutes: Int, seconds: Int, isContinuous: Bool) {
+        let entity = NSEntityDescription.entityForName("Timers", inManagedObjectContext: context)
         
-        let fetchedTimers = retrieveAllTimersFromCoreData().results
+        let newTimer = Timer(entity: entity, insertIntoManagedObjectContext: context)
+        newTimer.name = name
+        newTimer.seconds = Int64(minutes * 60 + seconds)
+        newTimer.isContinuous = isContinuous
+        newTimer.completed = false
         
-        //Fetching results
-        if !fetchedTimers.isEmpty {
-            for fetchedTimer in fetchedTimers {
-                let fetchedName = fetchedTimer.valueForKey("name") as String
-                let fetchedSeconds = fetchedTimer.valueForKey("seconds") as Int
-                let fetchedIsContinuous = fetchedTimer.valueForKey("isContinuous") as Bool
-                let fetchedCompleted = fetchedTimer.valueForKey("completed") as Bool
-                
-                var fetchedStartMoment: NSDate!
-                var fetchedEndMoment: NSDate!
-                
-                if fetchedCompleted {
-                    fetchedStartMoment = fetchedTimer.valueForKey("startMoment") as NSDate
-                    fetchedEndMoment = fetchedTimer.valueForKey("endMoment") as NSDate
-                }
-                
-                timers.append(Timer(name: fetchedName, seconds: fetchedSeconds, isContinuous: fetchedIsContinuous, completed: fetchedCompleted, startMoment: fetchedStartMoment, endMoment: fetchedEndMoment))
-            }
-        }
-    }
-    
-    func addTimer(name: String, minutes: Int, seconds: Int, isContinuous: Bool = false) {
-        var appDel: AppDelegate = (UIApplication.sharedApplication().delegate) as AppDelegate
-        var context: NSManagedObjectContext = appDel.managedObjectContext
-        var timerToBeSaved = NSEntityDescription.insertNewObjectForEntityForName("Timers", inManagedObjectContext: context) as NSManagedObject
-        
-        timerToBeSaved.setValue(name, forKey: "name")
-        timerToBeSaved.setValue(minutes * 60 + seconds, forKey: "seconds")
-        timerToBeSaved.setValue(isContinuous, forKey: "isContinuous")
-        timerToBeSaved.setValue(false, forKey: "completed")
+        timers.append(newTimer)
         
         context.save(nil)
-        
-        // Reload timers list
-        loadTimersFromCoreData()
     }
     
     func removeTimer(timerToRemoveIndex: Int) {
-        let removingTimerName = timers[timerToRemoveIndex].name
-        let removingTimerDuration = timers[timerToRemoveIndex].seconds
-
-        let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
-        
-        //Fetching results
-        if !fetchedTimers.isEmpty {
-            fetchLoop: for fetchedTimer in fetchedTimers {
-                let fetchedName = fetchedTimer.valueForKey("name") as String
-                let fetchedDuration = fetchedTimer.valueForKey("seconds") as Int
-                
-                //Delete timer with such a name
-                if (fetchedName == removingTimerName) && (fetchedDuration == removingTimerDuration)
-                {
-                    context.deleteObject(fetchedTimer)
-                    break fetchLoop
-                }
-            }
-            
-            context.save(nil)
-            
-            loadTimersFromCoreData()
-        }
-        
-    }
-    
-    func retrieveAllTimersFromCoreData() -> (context: NSManagedObjectContext, results: [NSManagedObject]) {
-        //Init context
-        let appDel = UIApplication.sharedApplication().delegate as AppDelegate
-        let context = appDel.managedObjectContext
-        
-        //Loading data from Core Data
-        let request = NSFetchRequest(entityName: "Timers")
-        let results = context.executeFetchRequest(request, error: nil) as [NSManagedObject]
-        
-        return (context, results)
+        let timerToRemove = timers.removeAtIndex(timerToRemoveIndex)
+        context.deleteObject(timerToRemove)
+        context.save(nil)
     }
     
     
-    // Отмечаем как выполненный и _УДАЛЯЕМ_!
+    // Отмечаем как выполненный
     func markTimerAsCompleted(timer: Timer, secondsPassed: Int, startMoment: NSDate) {
         timer.completed = true
+        timer.seconds = Int64(secondsPassed)
+        timer.startMoment = startMoment
+        timer.endMoment = NSDate()
         
-        let (context, fetchedTimers) = retrieveAllTimersFromCoreData()
-        
-        if !fetchedTimers.isEmpty {
-            fetchLoop: for fetchedTimer in fetchedTimers {
-                let fetchedName = fetchedTimer.valueForKey("name") as String
-                let fetchedDuration = fetchedTimer.valueForKey("seconds") as Int
-                let fetchedCompleted = fetchedTimer.valueForKey("completed") as Bool
-                
-                // Ищем таймер с таким именем, длительностью и ещё не выполненный
-                // Если есть несколько таймеров с одинаковым именем и длительностью (например, перерыв 3 минуты), то отмечен выполненным будет первый найденный.
-                if !fetchedCompleted && (fetchedName == timer.name) && (fetchedDuration == timer.seconds)
-                {
-                    fetchedTimer.setValue(true, forKey: "completed")
-                    
-                    // Записываем в таймер реальное пройденное время
-                    fetchedTimer.setValue(secondsPassed, forKey: "seconds")
-                    
-                    fetchedTimer.setValue(startMoment, forKey: "startMoment")
-                    fetchedTimer.setValue(NSDate(), forKey: "endMoment")
-                    
-                    // ВНИМАНИЕ! УДАЛЯЕМ ТАЙМЕР!
-                    //TODO Когда определюсь, либо сделать нормальное удаление, либо вернуть, как было
-                    context.deleteObject(fetchedTimer)
-                    
-                    break fetchLoop
-                }
-            }
-            
-            context.save(nil)
-            
-            loadTimersFromCoreData()
-        }
+        context.save(nil)
     }
     
     
     func getUncompletedTimersCount() -> Int {
         var uncompletedTimersCount = 0
         
-        let fetchedTimers = retrieveAllTimersFromCoreData().results
-        
-        if !fetchedTimers.isEmpty {
-            for fetchedTimer in fetchedTimers {
-                let fetchedTimerCompleted = fetchedTimer.valueForKey("completed") as Bool
-                if !fetchedTimerCompleted {
-                    ++uncompletedTimersCount
-                }
+        for timer in timers {
+            if !timer.completed {
+                ++uncompletedTimersCount
             }
         }
         
