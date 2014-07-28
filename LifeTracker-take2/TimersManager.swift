@@ -6,9 +6,17 @@ var currentTimerIndex: Int!
 
 let timersManager = TimersManager()
 
-class TimersManager: NSObject {
+class TimersManager: NSObject, Printable {
     
     var timers = [Timer]()
+    
+    override var description: String {
+        var stringToPrint = "\n"
+        for (index, timer: Timer) in enumerate(timers) {
+            stringToPrint += "[\(index)] \(timer)\n"
+        }
+        return stringToPrint
+    }
     
     init() {
         super.init()
@@ -42,6 +50,11 @@ class TimersManager: NSObject {
                 return
             }
         }
+    }
+    
+    func moveTimer(fromIndex sourceIndex: Int, toIndex newIndex: Int) {
+        let movingTimer: Timer = timers.removeAtIndex(sourceIndex)
+        timers.insert(movingTimer, atIndex: newIndex)
     }
     
     func loadTimersFromCoreData() {

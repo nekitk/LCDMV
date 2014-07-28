@@ -8,7 +8,12 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         super.viewDidLoad()
         
         timersTable.reloadData()
+        
+        timersTable.setEditing(true, animated: true)
     }
+    
+    
+    // КОЛИЧЕСТВО КЛЕТОК
     
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
         let timersCount = timersManager.getTimersCount()
@@ -21,6 +26,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             return timersCount
         }
     }
+    
     
     // ОТОБРАЖЕНИЕ КЛЕТОК
     
@@ -79,6 +85,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         return cell
     }
     
+    
     // УДАЛЕНИЕ ТАЙМЕРА
     
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
@@ -99,6 +106,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         }
     }
     
+    
     // СТИЛИ РЕДАКТИРОВАНИЯ
     
     func tableView(tableView: UITableView!, editingStyleForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCellEditingStyle {
@@ -110,6 +118,21 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             return UITableViewCellEditingStyle.Delete
         }
     }
+    
+    
+    // Запрещаем редактировать последнюю клетку
+    func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+        return indexPath.row < timersManager.getTimersCount()
+    }
+    
+    
+    // ПЕРЕМЕЩЕНИЕ КЛЕТОК
+    
+    func tableView(tableView: UITableView!, moveRowAtIndexPath sourceIndexPath: NSIndexPath!, toIndexPath destinationIndexPath: NSIndexPath!) {
+        timersManager.moveTimer(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
+        timersTable.reloadData()
+    }
+    
     
     // Back transition from adding timer screen
     @IBAction func unwindToTimers(segue: UIStoryboardSegue) {

@@ -127,6 +127,7 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="yPd-re-JB0">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="2fG-e8-MFA">
