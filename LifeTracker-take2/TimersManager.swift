@@ -1,17 +1,15 @@
 import UIKit
 import CoreData
 
-var currentTimer: Timer!
-
 let timersManager = TimersManager()
+
+var currentTimer: Timer!
 
 class TimersManager: NSObject, Printable {
     
-    private var timers = [Timer]()
+    private var context: NSManagedObjectContext!
     
-    var context: NSManagedObjectContext {
-        return (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-    }
+    private var timers = [Timer]()
     
     var timersCount: Int {
         return timers.count
@@ -37,9 +35,56 @@ class TimersManager: NSObject, Printable {
     init() {
         super.init()
         
+        let documentName = "DataBase"
+        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0] as NSURL
+        let documentURL = applicationDocumentsDirectory.URLByAppendingPathComponent(documentName)
+        let document = UIManagedDocument(fileURL: documentURL)
+        let options: Dictionary<String, Bool> = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
+        document.persistentStoreOptions = options
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(documentURL.path) {
+            //Документ существует, открываем
+            document.openWithCompletionHandler({
+                (success) -> Void in
+                if success {
+                    self.documentIsReady(document)
+                }
+                else {
+                    println("Can't open file.")
+                }
+                })
+        } else {
+            //Документа нет, создаём
+            document.saveToURL(documentURL, forSaveOperation: UIDocumentSaveOperation.ForCreating, completionHandler: {
+                (success) -> Void in
+                if success {
+                    self.documentIsReady(document)
+                }
+                else {
+                    println("Can't save file.")
+                }
+                })
+        }
+    }
+    
+    func documentIsReady(document: UIManagedDocument) {
+        switch document.documentState {
+        case UIDocumentState.Normal:
+            self.context = document.managedObjectContext
+            loadTimers()
+        default:
+            println("It's something wrong with document.")
+        }
+    }
+    
+    func loadTimers() {
         let request = NSFetchRequest(entityName: "Timers")
         request.returnsObjectsAsFaults = false
         timers = context.executeFetchRequest(request, error: nil) as [Timer]
+    }
+    
+    func isReady() -> Bool {
+        return context != nil
     }
     
     func getTimerByIndex(index: Int) -> Timer {
@@ -75,23 +120,19 @@ class TimersManager: NSObject, Printable {
     }
     
     func addTimer(name: String, minutes: Int, seconds: Int, isContinuous: Bool) {
-        let entity = NSEntityDescription.entityForName("Timers", inManagedObjectContext: context)
+        let newTimer = NSEntityDescription.insertNewObjectForEntityForName("Timers", inManagedObjectContext: context) as Timer
         
-        let newTimer = Timer(entity: entity, insertIntoManagedObjectContext: context)
         newTimer.name = name
         newTimer.seconds = Int64(minutes * 60 + seconds)
         newTimer.isContinuous = isContinuous
         newTimer.completed = false
         
         timers.append(newTimer)
-        
-        context.save(nil)
     }
     
     func removeTimer(timerToRemoveIndex: Int) {
         let timerToRemove = timers.removeAtIndex(timerToRemoveIndex)
         context.deleteObject(timerToRemove)
-        context.save(nil)
     }
     
     
@@ -101,8 +142,6 @@ class TimersManager: NSObject, Printable {
         timer.seconds = Int64(secondsPassed)
         timer.startMoment = startMoment
         timer.endMoment = NSDate()
-        
-        context.save(nil)
     }
     
     

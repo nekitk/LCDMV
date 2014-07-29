@@ -109,10 +109,10 @@
 		45D6776E195EB9E300048A8E /* LCDMV */ = {
 			isa = PBXGroup;
 			children = (
-				45D6778C195EBA0500048A8E /* Main.storyboard */,
 				45A548021966921100EBE4AC /* Objects */,
 				45863A23196153B0008BF8A5 /* Managers */,
 				45D67794195EBC4600048A8E /* Views */,
+				45D6778C195EBA0500048A8E /* Main.storyboard */,
 				45D67771195EB9E300048A8E /* AppDelegate.swift */,
 				45D67776195EB9E300048A8E /* Images.xcassets */,
 				45D67773195EB9E300048A8E /* LCDMV.xcdatamodeld */,

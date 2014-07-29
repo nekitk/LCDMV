@@ -404,6 +404,8 @@ class CurrentTimerViewController: UIViewController {
             ПОЯВЛЕНИЕ ЭКРАНА И ПЕРЕХОДЫ
     */
     
+    var waitForDocumentLoadTimer: NSTimer!
+    
     // Загрузка экрана
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -412,23 +414,36 @@ class CurrentTimerViewController: UIViewController {
         finishSoundPlayer = AVAudioPlayer(contentsOfURL: finishSoundURL, error: nil)
         startSoundPlayer = AVAudioPlayer(contentsOfURL: startSoundURL, error: nil)
         
-        // Переходим к следующему таймеру во время загрузки
-        timersManager.moveToNextTimer()
-        
-        if currentTimer {
-            changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+        waitForDocumentLoadTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "timersLoaded", userInfo: nil, repeats: true)
+    }
+    
+    var viewFullyLoaded = false
+    
+    func timersLoaded() {
+        if timersManager.isReady() {
+            waitForDocumentLoadTimer.invalidate()
             
-            // Если тудушка, то моментом начала считаем время её появления на экране
-            if currentTimer.isToDo() {
-                firstLaunchMoment = NSDate()
+            // Переходим к следующему таймеру во время загрузки
+            timersManager.moveToNextTimer()
+            
+            if currentTimer {
+                changeStateTo(TIMER_SET_BUT_NOT_STARTED)
+                
+                // Если тудушка, то моментом начала считаем время её появления на экране
+                if currentTimer.isToDo() {
+                    firstLaunchMoment = NSDate()
+                }
+                
+                // Запрещаем телефону лочиться, когда открыто окно с потоком
+                UIApplication.sharedApplication().idleTimerDisabled = true
+                
+                // Проставляем флаг о том, что окно полностью загружено для того, чтобы после этого применить восстановление
+                viewFullyLoaded = true
             }
-            
-            // Запрещаем телефону лочиться, когда открыто окно с потоком
-            UIApplication.sharedApplication().idleTimerDisabled = true
-        }
-        else {
-            // Если по каким-то причинам текущего таймера нет, то проваливаем
-            performSegueWithIdentifier("unwindToTimersFromFlow", sender: nil)
+            else {
+                // Если по каким-то причинам текущего таймера нет, то проваливаем
+                performSegueWithIdentifier("unwindToTimersFromFlow", sender: nil)
+            }
         }
     }
     
@@ -466,60 +481,74 @@ class CurrentTimerViewController: UIViewController {
         }
     }
     
+    // Таймер для ожидания загрузки таймеров
+    var restorationWaitingTimer: NSTimer!
+    
+    // Переменные для хранения промежуточных восстановлённых параметров
+    var restoredIndex: Int!
+    var restoredState: Int!
     
     // Восстанавливаем состояние
     override func decodeRestorableStateWithCoder(coder: NSCoder!) {
         super.decodeRestorableStateWithCoder(coder)
         
-        if currentTimer {
-            let restoredIndex = Int(coder.decodeInt64ForKey("currentTimerIndex"))
+        // Восстанавливаем параметры таймера прямо здесь, а то coder уничтожается, если пытаться повременить
+        restoredIndex = Int(coder.decodeInt64ForKey("currentTimerIndex"))
+        restoredState = Int(coder.decodeInt64ForKey("timerState"))
+        isRunningOvertime = coder.decodeBoolForKey("isRunningOvertime")
+        firstLaunchMoment = NSDate(timeIntervalSince1970: NSTimeInterval(coder.decodeInt64ForKey("firstLaunchMoment")))
+
+        let intervalForLastLaunchMoment = NSTimeInterval(coder.decodeInt64ForKey("lastLaunchMoment"))
+        if intervalForLastLaunchMoment > 0 {
+            lastLaunchMoment = NSDate(timeIntervalSince1970: intervalForLastLaunchMoment)
+        }
+        else {
+            lastLaunchMoment = nil
+        }
+        
+        secondsPassed = NSTimeInterval(coder.decodeInt64ForKey("secondsPassed"))
+        
+        // Ждём, пока загрузятся таймеры, чтобы завершить восстановление
+        restorationWaitingTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "finishRestoration", userInfo: nil, repeats: true)
+    }
+    
+    func finishRestoration() {
+        // Если таймеры загрузились и окно полностью загрузилось, то восстанавливаем состояние
+        if timersManager.isReady() && viewFullyLoaded {
             
-            // Восстанавливаем только в том случае, если текущий таймер и сохранённый -- это один и тот же.
-            if restoredIndex == timersManager.currentTimerIndex {
+            restorationWaitingTimer.invalidate()
             
-                let restoredState = Int(coder.decodeInt64ForKey("timerState"))
-                
-                // И только если таймер идёт или на паузе (в остальных случаях нет смысла восстанавливать)
-                if restoredState == RUNNING || restoredState == PAUSED {
+            if currentTimer {
+                // Восстанавливаем только в том случае, если текущий таймер и сохранённый -- это один и тот же.
+                if restoredIndex == timersManager.currentTimerIndex {
                     
-                    // Восстанавливаем параметры таймера
-                    isRunningOvertime = coder.decodeBoolForKey("isRunningOvertime")
-                    
-                    firstLaunchMoment = NSDate(timeIntervalSince1970: NSTimeInterval(coder.decodeInt64ForKey("firstLaunchMoment")))
-                    
-                    let intervalForLastLaunchMoment = NSTimeInterval(coder.decodeInt64ForKey("lastLaunchMoment"))
-                    if intervalForLastLaunchMoment > 0 {
-                        lastLaunchMoment = NSDate(timeIntervalSince1970: intervalForLastLaunchMoment)
+                    // И только если таймер идёт или на паузе (в остальных случаях нет смысла восстанавливать)
+                    if restoredState == RUNNING || restoredState == PAUSED {
+                        
+                        // Восстанавливаем состояние таймера в обход метода changeStateTo, так как это не смена состояния, а его восстановление
+                        timerState = restoredState
+                        
+                        // Восстанавливаем интерфейс
+                        prepareInterfaceForState(TIMER_SET_BUT_NOT_STARTED)
+                        prepareInterfaceForState(restoredState)
+                        
+                        if restoredState == RUNNING {
+                            runRefreshTimer()
+                        }
+                        else {
+                            updateTime()
+                        }
                     }
-                    else {
-                        lastLaunchMoment = nil
-                    }
-                    
-                    secondsPassed = NSTimeInterval(coder.decodeInt64ForKey("secondsPassed"))
-                    
-                    // Восстанавливаем состояние таймера в обход метода changeStateTo, так как это не смена состояния, а его восстановление
-                    timerState = restoredState
-                    
-                    // Восстанавливаем интерфейс
-                    prepareInterfaceForState(TIMER_SET_BUT_NOT_STARTED)
-                    prepareInterfaceForState(restoredState)
-                    
-                    if restoredState == RUNNING {
-                        runRefreshTimer()
-                    }
-                    else {
-                        updateTime()
-                    }
+                }
+                else {
+                    // Показываем предупреждение, что восстановленный таймер не совпадает с текущим. Может быть, удастся понять, из-за чего это происходит
+                    txtRestorationWarning.hidden = false
                 }
             }
             else {
-                // Показываем предупреждение, что восстановленный таймер не совпадает с текущим. Может быть, удастся понять, из-за чего это происходит
-                txtRestorationWarning.hidden = false
+                // Если текущий таймер не проставлен, то проваливаем. Почему-то при восстановлении переход не совершается, если его вызывать в методе viewDidLoad
+                performSegueWithIdentifier("unwindToTimersFromFlow", sender: nil)
             }
-        }
-        else {
-            // Если текущий таймер не проставлен, то проваливаем. Почему-то при восстановлении переход не совершается, если его вызывать в методе viewDidLoad
-            performSegueWithIdentifier("unwindToTimersFromFlow", sender: nil)
         }
     }
 

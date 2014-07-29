@@ -8,24 +8,46 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         return timersManager.timersCount
     }
     
-    override func viewDidLoad() {
+    var documentLoadTimer: NSTimer!
+    
+    override func viewDidLoad() {       
         super.viewDidLoad()
         
-        timersTable.reloadData()
-        
-        timersTable.setEditing(true, animated: true)
+        // Заводим таймер, который будет ждать, когда загрузятся таймеры
+        documentLoadTimer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: "updateTable", userInfo: nil, repeats: true)
     }
     
-    
+    func updateTable() {
+        if timersManager.isReady() {
+            documentLoadTimer.invalidate()
+            
+            var indexPaths = [NSIndexPath]()
+            
+            for i in 0...timersCount {
+                indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+            }
+            
+            timersTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
+            
+            timersTable.setEditing(true, animated: false)
+        }
+    }
+
+
     // КОЛИЧЕСТВО КЛЕТОК
-    
+
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        // Если есть незавершённые таймеры, то показываем кнопку "Начать"
-        if timersManager.hasNextUncompleted() {
-            return timersCount + 1
+        if timersManager.isReady() {
+            // Если есть незавершённые таймеры, то показываем кнопку "Начать"
+            if timersManager.hasNextUncompleted() {
+                return timersCount + 1
+            }
+            else {
+                return timersCount
+            }
         }
         else {
-            return timersCount
+            return 0
         }
     }
     
@@ -171,7 +193,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             performSegueWithIdentifier("pushToFlowScreen", sender: nil)
             startFlowRightNow = false
         }
-        else {
+        else if timersManager.isReady() {
             if timersCount > 0 {
                 // Пролистываем в самый низ
                 timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersCount - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
