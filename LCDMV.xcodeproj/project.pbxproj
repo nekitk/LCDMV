@@ -10,7 +10,7 @@
 		451C126F1988B883000CFC1D /* Timer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C126E1988B883000CFC1D /* Timer+Extension.swift */; };
 		45226E3F19725789006EA655 /* tone.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45226E3E19725789006EA655 /* tone.wav */; };
 		45226E41197257D0006EA655 /* gong.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45226E40197257D0006EA655 /* gong.wav */; };
-		45A548011966920B00EBE4AC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A548001966920B00EBE4AC /* Timer.swift */; };
+		455BDC541988F9B3003BD0FC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455BDC531988F9B3003BD0FC /* Timer.swift */; };
 		45BDA9061962A6D900ED64E3 /* mario.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45BDA9051962A6D900ED64E3 /* mario.wav */; };
 		45D67772195EB9E300048A8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D67771195EB9E300048A8E /* AppDelegate.swift */; };
 		45D67775195EB9E300048A8E /* LCDMV.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 45D67773195EB9E300048A8E /* LCDMV.xcdatamodeld */; };
@@ -38,7 +38,7 @@
 		451C126E1988B883000CFC1D /* Timer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Timer+Extension.swift"; sourceTree = "<group>"; };
 		45226E3E19725789006EA655 /* tone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tone.wav; sourceTree = "<group>"; };
 		45226E40197257D0006EA655 /* gong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gong.wav; sourceTree = "<group>"; };
-		45A548001966920B00EBE4AC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		455BDC531988F9B3003BD0FC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45BDA9051962A6D900ED64E3 /* mario.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mario.wav; sourceTree = "<group>"; };
 		45D6776C195EB9E300048A8E /* LCDMV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LCDMV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D67770195EB9E300048A8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -85,7 +85,7 @@
 		45A548021966921100EBE4AC /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				45A548001966920B00EBE4AC /* Timer.swift */,
+				455BDC531988F9B3003BD0FC /* Timer.swift */,
 				451C126E1988B883000CFC1D /* Timer+Extension.swift */,
 			);
 			name = Objects;
@@ -267,14 +267,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45D67772195EB9E300048A8E /* AppDelegate.swift in Sources */,
+				45D67775195EB9E300048A8E /* LCDMV.xcdatamodeld in Sources */,
+				455BDC541988F9B3003BD0FC /* Timer.swift in Sources */,
+				451C126F1988B883000CFC1D /* Timer+Extension.swift in Sources */,
+				45D67793195EBC3400048A8E /* TimersManager.swift in Sources */,
 				45D67791195EBA4100048A8E /* AddTimerViewController.swift in Sources */,
 				45D6778F195EBA3000048A8E /* TimersListViewController.swift in Sources */,
-				45D67793195EBC3400048A8E /* TimersManager.swift in Sources */,
-				45D67775195EB9E300048A8E /* LCDMV.xcdatamodeld in Sources */,
-				45A548011966920B00EBE4AC /* Timer.swift in Sources */,
-				451C126F1988B883000CFC1D /* Timer+Extension.swift in Sources */,
 				45D67796195EC33E00048A8E /* CurrentTimerViewController.swift in Sources */,
-				45D67772195EB9E300048A8E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +316,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -358,6 +359,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;

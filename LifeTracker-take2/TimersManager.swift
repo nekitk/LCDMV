@@ -78,7 +78,7 @@ class TimersManager: NSObject, Printable {
     }
     
     func loadTimers() {
-        let request = NSFetchRequest(entityName: "Timers")
+        let request = NSFetchRequest(entityName: "Timer")
         request.returnsObjectsAsFaults = false
         timers = context.executeFetchRequest(request, error: nil) as [Timer]
     }
@@ -120,10 +120,10 @@ class TimersManager: NSObject, Printable {
     }
     
     func addTimer(name: String, minutes: Int, seconds: Int, isContinuous: Bool) {
-        let newTimer = NSEntityDescription.insertNewObjectForEntityForName("Timers", inManagedObjectContext: context) as Timer
+        let newTimer = NSEntityDescription.insertNewObjectForEntityForName("Timer", inManagedObjectContext: context) as Timer
         
         newTimer.name = name
-        newTimer.seconds = minutes * 60 + seconds
+        newTimer.seconds = NSDecimalNumber(integer: minutes * 60 + seconds)
         newTimer.isContinuous = isContinuous
         newTimer.completed = false
         
@@ -139,7 +139,7 @@ class TimersManager: NSObject, Printable {
     // Отмечаем как выполненный
     func markTimerAsCompleted(timer: Timer, secondsPassed: Int, startMoment: NSDate) {
         timer.completed = true
-        timer.seconds = secondsPassed
+        timer.seconds = NSDecimalNumber(integer: secondsPassed)
         timer.startMoment = startMoment
         timer.endMoment = NSDate()
     }
