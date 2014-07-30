@@ -21,15 +21,17 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         if timersManager.isReady() {
             documentLoadTimer.invalidate()
             
-            var indexPaths = [NSIndexPath]()
-            
-            for i in 0...timersCount {
-                indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+            if timersCount > 0 {
+                var indexPaths = [NSIndexPath]()
+                
+                for i in 0...timersCount {
+                    indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                
+                timersTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
+                
+                timersTable.setEditing(true, animated: false)
             }
-            
-            timersTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
-            
-            timersTable.setEditing(true, animated: false)
         }
     }
 
@@ -77,7 +79,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             }
             // Завершённый таймер
             else if timer.completed {
-                let minutesString = timer.isToDo() ? "todo" : "\(timer.seconds / 60) min"
+                let minutesString = timer.isToDo() ? "todo" : "\(Int(timer.seconds) / 60) min"
                 
                 let dateFormatter = NSDateFormatter()
                 dateFormatter.timeStyle = .ShortStyle
@@ -92,10 +94,10 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             else {
                 
                 // И минуты, и секунды показываем, только если их не 0
-                let minutes = timer.seconds / 60
+                let minutes = Int(timer.seconds) / 60
                 let minutesString = (minutes == 0) ? "" : "\(minutes) min"
                 
-                let secondsWithoutMinutes = timer.seconds % 60
+                let secondsWithoutMinutes = Int(timer.seconds) % 60
                 let secondsString = (secondsWithoutMinutes == 0) ? "" : " \(secondsWithoutMinutes) sec"
                 
                 cell.detailTextLabel.text = "\(minutesString)\(secondsString)"

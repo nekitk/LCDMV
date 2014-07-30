@@ -5,7 +5,7 @@
         <attribute name="endMoment" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="isContinuous" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="seconds" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="seconds" optional="YES" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
         <attribute name="startMoment" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <elements>

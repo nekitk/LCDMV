@@ -123,7 +123,7 @@ class TimersManager: NSObject, Printable {
         let newTimer = NSEntityDescription.insertNewObjectForEntityForName("Timers", inManagedObjectContext: context) as Timer
         
         newTimer.name = name
-        newTimer.seconds = Int64(minutes * 60 + seconds)
+        newTimer.seconds = minutes * 60 + seconds
         newTimer.isContinuous = isContinuous
         newTimer.completed = false
         
@@ -139,7 +139,7 @@ class TimersManager: NSObject, Printable {
     // Отмечаем как выполненный
     func markTimerAsCompleted(timer: Timer, secondsPassed: Int, startMoment: NSDate) {
         timer.completed = true
-        timer.seconds = Int64(secondsPassed)
+        timer.seconds = secondsPassed
         timer.startMoment = startMoment
         timer.endMoment = NSDate()
     }

@@ -6,7 +6,7 @@ import CoreData
 
 class Timer: NSManagedObject, Printable {
     @NSManaged var name: String
-    @NSManaged var seconds: Int64
+    @NSManaged var seconds: NSNumber
     @NSManaged var isContinuous: Bool
     @NSManaged var completed: Bool
     @NSManaged var startMoment: NSDate!
