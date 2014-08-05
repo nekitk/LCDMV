@@ -9,8 +9,6 @@
 import Foundation
 import CoreData
 
-@objc(Timer)
-
 class Timer: NSManagedObject {
 
     @NSManaged var completed: Bool

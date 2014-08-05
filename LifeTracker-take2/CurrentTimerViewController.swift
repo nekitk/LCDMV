@@ -224,7 +224,7 @@ class CurrentTimerViewController: UIViewController {
             txtName.text = timerName
             updateTimeLabel(Int(totalSecondsToGo))
             
-            if currentTimer.isToDo() {
+            if currentTimer.isToDo {
                 showHideTimeButton.hidden = true
                 timerControls.hidden = true
                 
@@ -253,7 +253,7 @@ class CurrentTimerViewController: UIViewController {
         case FINISHED:
             
             // Если это был таймер, то показываем итог
-            if !currentTimer.isToDo() {
+            if !currentTimer.isToDo {
                 updateTimeLabel(Int(secondsPassed))
                 txtTime.hidden = false
                 showHideTimeButton.hidden = true
@@ -430,7 +430,7 @@ class CurrentTimerViewController: UIViewController {
                 changeStateTo(TIMER_SET_BUT_NOT_STARTED)
                 
                 // Если тудушка, то моментом начала считаем время её появления на экране
-                if currentTimer.isToDo() {
+                if currentTimer.isToDo {
                     firstLaunchMoment = NSDate()
                 }
                 

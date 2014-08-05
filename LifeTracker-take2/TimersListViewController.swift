@@ -8,6 +8,10 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         return timersManager.timersCount
     }
     
+    
+    // MARK: -
+    // MARK: ЗАГРУЗКА ДАННЫХ
+    
     var documentLoadTimer: NSTimer!
     
     override func viewDidLoad() {       
@@ -26,9 +30,26 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             timersTable.setEditing(true, animated: false)
         }
     }
+    
+    
+    // MARK: ПОЯВЛЕНИЕ ОКНА
+    
+    override func viewDidAppear(animated: Bool) {
+        if startFlowRightNow {
+            performSegueWithIdentifier("pushToFlowScreen", sender: nil)
+            startFlowRightNow = false
+        }
+        else if timersManager.isReady() {
+            if timersCount > 0 {
+                // Пролистываем в самый низ
+                timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersCount - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+            }
+        }
+    }
 
-
-    // КОЛИЧЕСТВО КЛЕТОК
+    
+    // MARK: -
+    // MARK: КОЛИЧЕСТВО КЛЕТОК
 
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
         if timersManager.isReady() {
@@ -46,7 +67,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     
-    // ОТОБРАЖЕНИЕ КЛЕТОК
+    // MARK: ОТОБРАЖЕНИЕ КЛЕТОК
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
         var cell: UITableViewCell!
@@ -66,12 +87,12 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
             cell.textLabel.text = timer.name
             
             // Незавершённая тудушка
-            if timer.isToDo() && !timer.completed {
+            if timer.isToDo && !timer.completed {
                     cell.detailTextLabel.text = "todo"
             }
             // Завершённый таймер или тудушка
             else if timer.completed {
-                let minutesString = timer.isToDo() ? "todo" : "\(timer.seconds.integerValue / 60) min"
+                let minutesString = timer.isToDo ? "todo" : "\(timer.seconds.integerValue / 60) min"
                 
                 let dateFormatter = NSDateFormatter()
                 dateFormatter.timeStyle = .ShortStyle
@@ -104,29 +125,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     
-    // УДАЛЕНИЕ ТАЙМЕРА
-    
-    func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
-        if editingStyle == UITableViewCellEditingStyle.Delete {
-            let uncompletedTimersBefore = timersManager.getUncompletedTimersCount()
-            
-            timersManager.removeTimer(indexPath.row)
-            
-            let uncompletedTimersAfter = timersManager.getUncompletedTimersCount()
-            
-            // Если удалили последний незавершённый таймер (раньше были, а теперь 0), то сносим обе клетки
-            //todo можно заменить на hasNextUncompleted
-            if uncompletedTimersAfter == 0 && uncompletedTimersBefore != 0 {
-                timersTable.deleteRowsAtIndexPaths([indexPath, NSIndexPath(forRow: indexPath.row + 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-            }
-            else {
-                timersTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
-            }
-        }
-    }
-    
-    
-    // СТИЛИ РЕДАКТИРОВАНИЯ
+    // MARK: СТИЛИ РЕДАКТИРОВАНИЯ
     
     func tableView(tableView: UITableView!, editingStyleForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCellEditingStyle {
         if indexPath.row >= timersCount {
@@ -145,7 +144,7 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     
-    // ПЕРЕМЕЩЕНИЕ КЛЕТОК
+    // MARK: ПЕРЕМЕЩЕНИЕ КЛЕТОК
     
     func tableView(tableView: UITableView!, moveRowAtIndexPath sourceIndexPath: NSIndexPath!, toIndexPath destinationIndexPath: NSIndexPath!) {
         timersManager.moveTimer(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
@@ -158,8 +157,10 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         
         return proposedDestinationIndexPath
     }
+
     
-    // ДОБАВЛЯЕМ ТАЙМЕР (во время возвращения с экрана добавления таймера)
+    // MARK: ДОБАВЛЯЕМ ТАЙМЕР
+    // (во время возвращения с экрана добавления таймера)
     @IBAction func unwindToTimers(segue: UIStoryboardSegue) {
         if segue.sourceViewController is CurrentTimerViewController {
             timersTable.reloadData()
@@ -182,15 +183,24 @@ class TimersListViewController: UIViewController, UITableViewDataSource, UITable
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
-        if startFlowRightNow {
-            performSegueWithIdentifier("pushToFlowScreen", sender: nil)
-            startFlowRightNow = false
-        }
-        else if timersManager.isReady() {
-            if timersCount > 0 {
-                // Пролистываем в самый низ
-                timersTable.scrollToRowAtIndexPath(NSIndexPath(forRow: timersCount - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+    
+    // MARK: УДАЛЕНИЕ ТАЙМЕРА
+    
+    func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            let uncompletedTimersBefore = timersManager.getUncompletedTimersCount()
+            
+            timersManager.removeTimer(indexPath.row)
+            
+            let uncompletedTimersAfter = timersManager.getUncompletedTimersCount()
+            
+            // Если удалили последний незавершённый таймер (раньше были, а теперь 0), то сносим обе клетки
+            //todo можно заменить на hasNextUncompleted
+            if uncompletedTimersAfter == 0 && uncompletedTimersBefore != 0 {
+                timersTable.deleteRowsAtIndexPaths([indexPath, NSIndexPath(forRow: indexPath.row + 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+            }
+            else {
+                timersTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
             }
         }
     }
